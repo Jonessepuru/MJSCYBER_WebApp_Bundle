@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 10 10 14;
+  --surface: 20 22 30;
+  --surface-2: 30 33 44;
+  --text: 245 246 250;
+  --muted: 165 170 185;
+  --primary: 11 61 145;     /* navy */
+  --primary-2: 28 82 181;
+  --accent: 192 57 43;      /* red */
+  --accent-2: 230 85 70;
+  --border: 44 48 62;
+  --ring: 70 120 220;
+}
+
+html, body, #root {
+  height: 100%;
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+  font-family: 'Barlow', 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04";
+}
+
+* { border-color: rgb(var(--border)); }
+
+body {
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(11,61,145,0.18), transparent 50%),
+    radial-gradient(circle at 85% 90%, rgba(192,57,43,0.12), transparent 55%),
+    linear-gradient(180deg, #07080c 0%, #0a0b12 100%);
+  background-attachment: fixed;
+}
+
+::selection { background: rgba(192,57,43,0.6); color: white; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0a0b12; }
+::-webkit-scrollbar-thumb { background: #1a1d2a; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #2a2f42; }
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-2))] text-white focus:ring-[rgb(var(--ring))] shadow-lg shadow-blue-900/30;
+  }
+  .btn-accent {
+    @apply btn bg-[rgb(var(--accent))] hover:bg-[rgb(var(--accent-2))] text-white focus:ring-[rgb(var(--accent))] shadow-lg shadow-red-900/30;
+  }
+  .btn-ghost {
+    @apply btn bg-white/5 hover:bg-white/10 text-zinc-200 border border-white/10;
+  }
+  .btn-outline {
+    @apply btn bg-transparent border border-white/20 hover:bg-white/5 text-zinc-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg bg-[rgb(var(--surface))] border border-white/10 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ring))] focus:border-transparent transition;
+  }
+  .label { @apply block text-sm font-medium text-zinc-300 mb-1.5; }
+
+  .card {
+    @apply bg-[rgb(var(--surface))] border border-white/10 rounded-2xl shadow-xl;
+  }
+  .card-glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-blue   { @apply badge bg-blue-500/15 text-blue-300 border border-blue-500/30; }
+  .badge-green  { @apply badge bg-emerald-500/15 text-emerald-300 border border-emerald-500/30; }
+  .badge-amber  { @apply badge bg-amber-500/15 text-amber-300 border border-amber-500/30; }
+  .badge-red    { @apply badge bg-red-500/15 text-red-300 border border-red-500/30; }
+  .badge-zinc   { @apply badge bg-zinc-500/15 text-zinc-300 border border-zinc-500/30; }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold tracking-tight text-white;
+  }
+  .muted { color: rgb(var(--muted)); }
+
+  /* Animated underline for nav */
+  .nav-link {
+    @apply relative text-zinc-300 hover:text-white text-sm font-medium transition-colors;
+  }
+  .nav-link::after {
+    content: "";
+    @apply absolute left-0 -bottom-1 w-0 h-[2px] bg-[rgb(var(--accent))] transition-all duration-300;
+  }
+  .nav-link:hover::after { @apply w-full; }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+/* Fade-up utility for simple entrance anim */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-up { animation: fadeUp 0.6s cubic-bezier(.2,.65,.3,1) both; }
+@keyframes pulseDot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: .55; } }
+.pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
