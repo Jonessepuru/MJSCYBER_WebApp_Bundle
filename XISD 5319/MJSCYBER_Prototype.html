@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MJSCYBER Security School — HTML Prototype</title>
+<meta name="description" content="MJSCYBER Security School — PSIRA-accredited training, VIP protection and digital certificate verification. Bochum, Limpopo." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: 10 10 14;
+    --surface: 20 22 30;
+    --text: 245 246 250;
+    --muted: 165 170 185;
+    --primary: 11 61 145;
+    --primary-2: 28 82 181;
+    --accent: 192 57 43;
+    --accent-2: 230 85 70;
+    --border: 44 48 62;
+  }
+  html, body { background: rgb(var(--bg)); color: rgb(var(--text));
+               font-family: 'Calibri', 'Segoe UI', sans-serif; min-height: 100%; }
+  body {
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(11,61,145,0.18), transparent 50%),
+      radial-gradient(circle at 85% 90%, rgba(192,57,43,0.12), transparent 55%),
+      linear-gradient(180deg, #07080c 0%, #0a0b12 100%);
+    background-attachment: fixed;
+  }
+  .nav-link::after { content:""; position:absolute; left:0; bottom:-4px; width:0; height:2px;
+                     background: rgb(var(--accent)); transition: width .3s; }
+  .nav-link:hover::after { width: 100%; }
+  .card { background: rgb(var(--surface)); border: 1px solid rgba(255,255,255,.1); border-radius: 1rem; }
+  .card-glass { background: rgba(255,255,255,.05); backdrop-filter: blur(12px);
+                border: 1px solid rgba(255,255,255,.1); border-radius: 1rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+         padding: .55rem 1.1rem; border-radius: .55rem; font-weight: 600; font-size: .9rem;
+         transition: all .2s; cursor: pointer; border: none; }
+  .btn-primary { background: rgb(var(--primary)); color: #fff; }
+  .btn-primary:hover { background: rgb(var(--primary-2)); }
+  .btn-accent  { background: rgb(var(--accent));  color: #fff; box-shadow: 0 10px 22px -10px rgba(192,57,43,.6); }
+  .btn-accent:hover  { background: rgb(var(--accent-2)); }
+  .btn-ghost   { background: rgba(255,255,255,.06); color: #e6e6ee; border: 1px solid rgba(255,255,255,.1); }
+  .btn-ghost:hover { background: rgba(255,255,255,.12); }
+  .input { width: 100%; padding: .65rem .9rem; border-radius: .55rem;
+           background: rgb(var(--surface)); border: 1px solid rgba(255,255,255,.12);
+           color: #fff; font-size: .9rem; }
+  .input:focus { outline: 2px solid rgb(70,120,220); border-color: transparent; }
+  .label { display: block; font-size: .82rem; color: #c2c6d4; margin-bottom: .3rem; font-weight: 500; }
+  .badge { display: inline-flex; align-items: center; padding: .15rem .55rem; border-radius: 999px;
+           font-size: .7rem; font-weight: 700; }
+  .badge-blue   { background: rgba(59,130,246,.15); color: #93c5fd; border: 1px solid rgba(59,130,246,.3); }
+  .badge-green  { background: rgba(16,185,129,.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,.3); }
+  .badge-amber  { background: rgba(245,158,11,.15); color: #fcd34d; border: 1px solid rgba(245,158,11,.3); }
+  .badge-red    { background: rgba(239,68,68,.15);  color: #fca5a5; border: 1px solid rgba(239,68,68,.3); }
+  .badge-zinc   { background: rgba(113,113,122,.15); color: #d4d4d8; border: 1px solid rgba(113,113,122,.3); }
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  @keyframes pulseDot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity:.5; } }
+  .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(12px);} to { opacity:1; transform: translateY(0);} }
+  .fade-up { animation: fadeUp .55s ease both; }
+  .muted { color: rgb(var(--muted)); }
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-thumb { background: #1a1d2a; border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2f42; }
+</style>
+</head>
+<body class="text-zinc-100">
+
+<!-- ====== NAVBAR ====== -->
+<header class="sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#/" class="flex items-center gap-2.5 group" onclick="nav('/')">
+      <div class="relative">
+        <i data-lucide="shield" class="w-7 h-7" style="color: rgb(var(--accent));"></i>
+        <span class="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+      </div>
+      <div class="leading-none">
+        <div class="font-black text-white text-lg tracking-tight">MJSCYBER</div>
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-400 -mt-0.5">Security School</div>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-7" id="nav-public">
+      <a class="nav-link relative text-sm text-zinc-300 hover:text-white" href="#/courses" onclick="nav('/courses')">Courses</a>
+      <a class="nav-link relative text-sm text-zinc-300 hover:text-white" href="#/about"   onclick="nav('/about')">About</a>
+      <a class="nav-link relative text-sm text-zinc-300 hover:text-white" href="#/verify"  onclick="nav('/verify')">Verify Certificate</a>
+      <a class="nav-link relative text-sm text-zinc-300 hover:text-white hidden" id="nav-dashboard" href="#/dashboard" onclick="nav('/dashboard')">My Dashboard</a>
+      <a class="nav-link relative text-sm text-zinc-300 hover:text-white hidden" id="nav-admin"     href="#/admin"     onclick="nav('/admin')">Admin</a>
+    </nav>
+    <div class="flex items-center gap-2" id="nav-auth">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</header>
+
+<!-- ====== MAIN VIEW ====== -->
+<main id="view" class="min-h-[calc(100vh-4rem)]"></main>
+
+<!-- ====== FOOTER ====== -->
+<footer class="border-t border-white/10 bg-black/40 mt-24">
+  <div class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-4 gap-8">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="shield" class="w-6 h-6" style="color: rgb(var(--accent));"></i>
+        <span class="font-black text-white">MJSCYBER</span>
+      </div>
+      <p class="text-sm muted">Private Security Training &amp; Specialised Protection Services. CIPC 2022/201980/07 · Est. 2022.</p>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3 text-sm">Services</h4>
+      <ul class="space-y-2 text-sm muted">
+        <li>VIP Protection</li><li>PSIRA Grades A – E</li><li>Armed Response</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3 text-sm">Company</h4>
+      <ul class="space-y-2 text-sm muted">
+        <li><a href="#/about" onclick="nav('/about')" class="hover:text-white">About MJSCYBER</a></li>
+        <li>PSiRA Compliance</li><li>POPIA Privacy</li><li>Careers</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3 text-sm">Contact</h4>
+      <ul class="space-y-2 text-sm muted">
+        <li class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> Bochum, Limpopo, SA</li>
+        <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i>
+          <a href="tel:+27824268567" class="hover:text-white">082 426 8567</a></li>
+        <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i>
+          <a href="mailto:mjscyber1@gmail.com" class="hover:text-white">mjscyber1@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10 py-4 text-center text-xs muted">© 2026 MJSCYBER PTY LTD. All rights reserved.</div>
+</footer>
+
+<!-- ====== WhatsApp FAB ====== -->
+<a href="https://wa.me/27824268567?text=Hi%20MJSCYBER%2C%20I%27d%20like%20more%20information"
+   target="_blank" rel="noopener"
+   class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full font-semibold shadow-2xl"
+   style="background:#25D366; color:#fff;">
+  <i data-lucide="message-circle" class="w-5 h-5"></i>
+  <span class="hidden sm:inline text-sm">Chat on WhatsApp</span>
+</a>
+
+<!-- ====== MODAL ROOT ====== -->
+<div id="modal-root"></div>
+
+<!-- ============================ APP STATE & RENDERER ============================ -->
+<script>
+/* -------- in-memory database -------- */
+const DB = {
+  users: [
+    { id: "u1", email:"admin@mjscyber.co.za", password:"Admin@123", name:"MJSCYBER Administrator", role:"admin" },
+    { id: "u2", email:"thabo@student.co.za", password:"Student@123", name:"Thabo Mokoena",  role:"student", id_number:"9001015800087", phone:"+27-82-111-2222" },
+    { id: "u3", email:"nandi@student.co.za", password:"Student@123", name:"Nandi Dlamini",  role:"student", id_number:"9203025400081", phone:"+27-83-222-3333" },
+    { id: "u4", email:"sipho@student.co.za", password:"Student@123", name:"Sipho Ngobeni",  role:"student", id_number:"8805105700080", phone:"+27-84-333-4444" },
+  ],
+  courses: [
+    { id:"c1", title:"PSIRA Grade E",  code:"PSE-E",  grade:"E",  description:"Entry-level security officer training covering patrolling, access control and report writing.", duration_days:5,  price_zar:1200, active:true },
+    { id:"c2", title:"PSIRA Grade D",  code:"PSE-D",  grade:"D",  description:"Intermediate security officer module: radio procedure, OHS and emergency response.",            duration_days:5,  price_zar:1400, active:true },
+    { id:"c3", title:"PSIRA Grade C",  code:"PSE-C",  grade:"C",  description:"Supervisor-level training covering incident command, briefings and evidence handling.",          duration_days:7,  price_zar:1800, active:true },
+    { id:"c4", title:"PSIRA Grade B",  code:"PSE-B",  grade:"B",  description:"Site-manager training: guard deployment planning, rostering and compliance.",                    duration_days:10, price_zar:2500, active:true },
+    { id:"c5", title:"PSIRA Grade A",  code:"PSE-A",  grade:"A",  description:"Senior management: contracts, HR, operational audits and client liaison.",                       duration_days:14, price_zar:3800, active:true },
+    { id:"c6", title:"Armed Response", code:"AR-01",  grade:"SP", description:"Firearms competency, tactical driving, armed reaction protocols and legal framework.",          duration_days:21, price_zar:6500, active:true },
+  ],
+  enrolments: [
+    { id:"e1", student_id:"u2", course_id:"c1", status:"completed", payment_status:"paid", theory_mark:82, practical_mark:82, overall_mark:82, enrolled_at:"2026-03-15" },
+    { id:"e2", student_id:"u3", course_id:"c6", status:"completed", payment_status:"paid", theory_mark:76, practical_mark:76, overall_mark:76, enrolled_at:"2026-03-18" },
+    { id:"e3", student_id:"u4", course_id:"c3", status:"pending",   payment_status:"pending", theory_mark:null, practical_mark:null, overall_mark:null, enrolled_at:"2026-04-22" },
+  ],
+  certificates: [
+    { id:"k1", serial:"MJS-2026-7AA45F6A", enrolment_id:"e2", student_id:"u3", student_name:"Nandi Dlamini", course_title:"Armed Response", course_code:"AR-01", course_grade:"SP", overall_mark:76, issued_at:"2026-03-25" },
+    { id:"k2", serial:"MJS-2026-788357AF", enrolment_id:"e1", student_id:"u2", student_name:"Thabo Mokoena", course_title:"PSIRA Grade E", course_code:"PSE-E", course_grade:"E",  overall_mark:82, issued_at:"2026-03-22" },
+  ],
+  vip_requests: [{ id:"v1", created_by:"u2", client_name:"Pretoria Diamonds Ltd", contact:"+27-12-345-6789", start_date:"2026-05-10", end_date:"2026-05-12", location:"Sandton, JHB", guards_needed:4, details:"Executive transport & venue security.", status:"pending" }],
+  site_security: [{ id:"s1", created_by:"u3", site_name:"Polokwane Heights Construction", location:"Polokwane, LP", start_date:"2026-05-01", end_date:"2026-08-30", shift_type:"24-7", guards_needed:6, details:"Multi-storey residential build.", status:"pending" }],
+};
+let session = null;        // { user }
+let currentRoute = "/";
+
+/* -------- helpers -------- */
+const $ = (sel, root=document) => root.querySelector(sel);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const zarFmt = n => "R " + Number(n).toLocaleString("en-ZA");
+const today = () => new Date().toLocaleDateString("en-ZA");
+const newSerial = () => "MJS-" + new Date().getFullYear() + "-" + Math.random().toString(16).slice(2,10).toUpperCase();
+
+function refreshIcons() { window.lucide && lucide.createIcons(); }
+
+function setNavAuth() {
+  const wrap = $("#nav-auth");
+  if (!session) {
+    wrap.innerHTML = `
+      <a href="#/login" onclick="nav('/login')" class="btn btn-ghost">Login</a>
+      <a href="#/register" onclick="nav('/register')" class="btn btn-accent">Enrol Now</a>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+        <i data-lucide="user" class="w-4 h-4 text-zinc-400"></i>
+        <span class="text-sm">${esc(session.user.name)}</span>
+        <span class="badge ${session.user.role==='admin'?'badge-red':'badge-blue'}">${session.user.role}</span>
+      </div>
+      <button onclick="logout()" class="btn btn-ghost"><i data-lucide="log-out" class="w-4 h-4"></i> Logout</button>`;
+  }
+  $("#nav-dashboard").classList.toggle("hidden", !session || session.user.role !== "student");
+  $("#nav-admin").classList.toggle("hidden", !session || session.user.role !== "admin");
+  refreshIcons();
+}
+
+/* -------- router -------- */
+function nav(path, replace=false) {
+  currentRoute = path;
+  if (!replace) location.hash = "#" + path;
+  render();
+}
+window.addEventListener("hashchange", () => {
+  currentRoute = location.hash.slice(1) || "/";
+  render();
+});
+
+function render() {
+  const path = currentRoute;
+  const view = $("#view");
+  // guards
+  if (path === "/dashboard" && (!session || session.user.role !== "student")) return nav("/login", true);
+  if (path === "/admin"     && (!session || session.user.role !== "admin"))   return nav("/login", true);
+
+  if      (path === "/")          view.innerHTML = renderLanding();
+  else if (path === "/about")     view.innerHTML = renderAbout();
+  else if (path === "/courses")   view.innerHTML = renderCourses();
+  else if (path === "/verify")    view.innerHTML = renderVerify();
+  else if (path.startsWith("/verify/")) { view.innerHTML = renderVerify(); doVerify(decodeURIComponent(path.split("/verify/")[1])); }
+  else if (path === "/login")     view.innerHTML = renderLogin();
+  else if (path === "/register")  view.innerHTML = renderRegister();
+  else if (path === "/dashboard") view.innerHTML = renderStudent();
+  else if (path === "/admin")     view.innerHTML = renderAdmin();
+  else view.innerHTML = renderLanding();
+  setNavAuth();
+  refreshIcons();
+  window.scrollTo(0, 0);
+}
+
+/* -------- AUTH -------- */
+function logout() { session = null; nav("/"); }
+function login(email, password) {
+  const u = DB.users.find(x => x.email === email.toLowerCase() && x.password === password);
+  if (!u) throw new Error("Invalid email or password");
+  session = { user: u };
+  nav(u.role === "admin" ? "/admin" : "/dashboard");
+}
+
+/* ===========================================================
+   ============           VIEWS              =================
+   =========================================================== */
+
+/* --------- LANDING --------- */
+function renderLanding() {
+  return `
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 hero-grid opacity-60"></div>
+    <div class="absolute inset-0" style="background:linear-gradient(to bottom, transparent, rgba(0,0,0,.4), rgb(var(--bg)));"></div>
+    <div class="relative max-w-7xl mx-auto px-6 pt-20 pb-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide"
+              style="background:rgba(192,57,43,.1); border:1px solid rgba(192,57,43,.25); color:#fca5a5;">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> PSIRA ACCREDITED · BOCHUM, LIMPOPO
+        </span>
+        <h1 class="mt-5 text-5xl md:text-6xl font-black tracking-tight leading-[1.05] text-white">
+          Train. Protect. <span style="color: rgb(var(--accent));">Certify.</span>
+        </h1>
+        <p class="mt-5 text-lg muted max-w-lg">MJSCYBER Security School digitises the entire journey — from student
+          enrolment and practical grading to tamper-proof certificate issuance, VIP protection and construction-site security.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#/register" onclick="nav('/register')" class="btn btn-accent">
+            Enrol as Student <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#/verify" onclick="nav('/verify')" class="btn btn-ghost">
+            <i data-lucide="scan-line" class="w-4 h-4"></i> Verify a Certificate
+          </a>
+        </div>
+        <div class="mt-10 grid grid-cols-4 gap-3 max-w-lg">
+          ${[["500+","Guards Trained"],["98%","Pass Rate"],["5+","Years (since 2022)"],["24/7","Operations"]]
+            .map(([k,l]) => `<div class="card-glass px-3 py-3 text-center">
+                <div class="text-2xl font-black text-white">${k}</div>
+                <div class="text-[10px] uppercase tracking-wider muted mt-0.5">${l}</div>
+              </div>`).join("")}
+        </div>
+      </div>
+      <div class="fade-up">
+        <div class="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+          <div class="w-full h-[480px] flex items-center justify-center"
+               style="background:
+                 radial-gradient(circle at 30% 30%, rgba(11,61,145,.55), transparent 60%),
+                 radial-gradient(circle at 80% 80%, rgba(192,57,43,.45), transparent 55%),
+                 linear-gradient(135deg, #0a1a3a 0%, #1a0d1a 100%);">
+            <div class="text-center">
+              <i data-lucide="shield" class="w-24 h-24 mx-auto mb-4" style="color: rgb(var(--accent));"></i>
+              <div class="text-white text-3xl font-black tracking-tight">MJSCYBER</div>
+              <div class="muted mt-1">Security School • Limpopo</div>
+            </div>
+          </div>
+          <div class="absolute bottom-5 left-5 right-5 card-glass p-4 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgb(var(--accent));">
+              <i data-lucide="award" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+              <div class="text-white font-semibold">Instant Digital Certificates</div>
+              <div class="text-xs muted">With QR-verifiable serial numbers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-16">
+    <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">Platform Capabilities</div>
+    <h2 class="text-3xl md:text-4xl font-bold text-white mt-2">Everything a modern security school needs</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+      ${[
+        ["book-open","PSIRA Grade Training","Full Grade E → A curriculum aligned to PSIRA."],
+        ["crosshair","Armed Response","Firearms competency, tactical driving and legal framework."],
+        ["award","Digital Certificates","Tamper-proof certificates with unique serials & QR verification."],
+        ["user-cog","VIP Protection","Client-driven protection details with real-time guard scheduling."],
+        ["building","Construction Site Security","24/7 rostering, perimeter protection and equipment tracking."],
+        ["gauge","Live Admin Dashboard","Enrolments, revenue, compliance — all at a glance."],
+      ].map(([i,t,d]) => `
+        <div class="card p-6 hover:-translate-y-1 transition-all">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+               style="background:rgba(11,61,145,.25); border:1px solid rgba(11,61,145,.4);">
+            <i data-lucide="${i}" class="w-5 h-5 text-blue-300"></i>
+          </div>
+          <h3 class="text-white font-semibold text-lg">${t}</h3>
+          <p class="muted text-sm mt-1.5">${d}</p>
+        </div>`).join("")}
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="rounded-3xl p-10 md:p-14 border border-white/10 relative overflow-hidden"
+         style="background:linear-gradient(135deg, rgba(11,61,145,.7), #0a2a65, #1a0d1a);">
+      <i data-lucide="shield" class="w-10 h-10 mb-4" style="color: rgb(var(--accent));"></i>
+      <h3 class="text-3xl md:text-4xl font-black text-white">Protect your site. Elevate your career.</h3>
+      <p class="text-zinc-200 mt-3 max-w-2xl">Whether you are booking guard services or enrolling in a PSIRA course — MJSCYBER delivers with verifiable digital records every step of the way.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#/register" onclick="nav('/register')" class="btn btn-accent">Enrol Now</a>
+        <a href="#/login"    onclick="nav('/login')"    class="btn btn-ghost">Client Login</a>
+      </div>
+    </div>
+  </section>
+  `;
+}
+
+/* --------- ABOUT --------- */
+function renderAbout() {
+  const milestones = [
+    ["2022","MJSCYBER PTY LTD founded and registered with CIPC (2022/201980/07) in Bochum, Limpopo."],
+    ["2023","First cohort of PSIRA Grade E – C students trained and certified."],
+    ["2024","Expansion into VIP Protection and construction-site security contracts."],
+    ["2025","Armed Response programme launched; regional corporate partnerships."],
+    ["2026","Digital transformation — this web platform — brings training and services online."],
+  ];
+  return `
+  <section class="max-w-7xl mx-auto px-6 pt-16 pb-10">
+    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
+          style="background:rgba(192,57,43,.1); border:1px solid rgba(192,57,43,.25); color:#fca5a5;">
+      <i data-lucide="shield" class="w-3.5 h-3.5"></i> ABOUT MJSCYBER
+    </span>
+    <h1 class="mt-5 text-5xl md:text-6xl font-black tracking-tight text-white">
+      Built in Bochum. <br><span style="color: rgb(var(--accent));">Trusted nationally.</span>
+    </h1>
+    <p class="mt-5 text-lg muted max-w-2xl">MJSCYBER PTY LTD is a PSIRA-accredited private security training provider,
+      founded in 2022. We blend hands-on instruction with a modern digital platform so guards can earn, prove and
+      showcase their qualifications with confidence.</p>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-5">
+    <div class="card p-8">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+           style="background:rgba(11,61,145,.25); border:1px solid rgba(11,61,145,.4);">
+        <i data-lucide="target" class="w-5 h-5 text-blue-300"></i>
+      </div>
+      <h2 class="text-white font-bold text-2xl">Our Mission</h2>
+      <p class="muted mt-3">To elevate the South African private-security sector by producing disciplined, certified and digitally-verifiable guards — and to deliver specialised protection services that meet the highest standards of professionalism.</p>
+    </div>
+    <div class="card p-8">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+           style="background:rgba(192,57,43,.25); border:1px solid rgba(192,57,43,.4);">
+        <i data-lucide="eye" class="w-5 h-5 text-red-300"></i>
+      </div>
+      <h2 class="text-white font-bold text-2xl">Our Vision</h2>
+      <p class="muted mt-3">A South Africa where every security credential is instantly verifiable, every site is protected by well-trained professionals, and every community — including our home of Bochum — benefits from safer public and commercial spaces.</p>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="card p-8 md:p-12">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-1">
+          <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">Our Story</div>
+          <h2 class="text-white font-bold text-3xl mt-2">Five years of growth.</h2>
+          <p class="muted mt-3">From a small classroom in Bochum to a digitally-enabled security ecosystem, every step has been about raising the bar for training and protection in our region.</p>
+          <div class="mt-5 space-y-3 text-sm">
+            <div class="flex items-center gap-2 muted"><i data-lucide="building" class="w-4 h-4"></i> CIPC 2022/201980/07</div>
+            <div class="flex items-center gap-2 muted"><i data-lucide="calendar" class="w-4 h-4"></i> Established 2022</div>
+            <div class="flex items-center gap-2 muted"><i data-lucide="map-pin" class="w-4 h-4"></i> Bochum, Limpopo</div>
+          </div>
+        </div>
+        <ol class="md:col-span-2 relative border-l-2 border-white/10 pl-6 space-y-6">
+          ${milestones.map(([y,t]) => `
+            <li class="relative">
+              <span class="absolute -left-[31px] top-1 w-4 h-4 rounded-full" style="background: rgb(var(--accent)); border: 4px solid rgb(var(--bg));"></span>
+              <div class="font-bold" style="color: rgb(var(--accent-2));">${y}</div>
+              <p class="text-zinc-200 mt-0.5">${t}</p>
+            </li>`).join("")}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="card p-10 md:p-12" style="background:linear-gradient(135deg, rgba(11,61,145,.4), transparent, rgba(192,57,43,.15));">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div>
+          <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">Get in touch</div>
+          <h3 class="text-white text-3xl font-bold mt-2">Book a consultation.</h3>
+          <p class="muted mt-2">Talk to us about training, guard services or a custom security contract.</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-none">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider muted">Phone</div>
+            <div class="text-white font-semibold mt-0.5"><a href="tel:+27824268567">082 426 8567</a></div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-none">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider muted">Email</div>
+            <div class="text-white font-semibold mt-0.5"><a href="mailto:mjscyber1@gmail.com">mjscyber1@gmail.com</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  `;
+}
+
+/* --------- COURSES --------- */
+function renderCourses() {
+  const myEnrolledCourseIds = new Set();
+  if (session && session.user.role === "student") {
+    DB.enrolments.filter(e => e.student_id === session.user.id && ["pending","active","completed"].includes(e.status))
+      .forEach(e => myEnrolledCourseIds.add(e.course_id));
+  }
+  return `
+  <section class="max-w-7xl mx-auto px-6 py-14">
+    <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">Catalogue</div>
+    <h1 class="text-3xl md:text-4xl font-bold text-white mt-2">Training programmes</h1>
+    <p class="muted mt-2 max-w-2xl">Industry-aligned PSIRA training plus specialised armed-response programmes — delivered in Bochum with national certification.</p>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+      ${DB.courses.filter(c => c.active).map(c => `
+        <div class="card p-6 flex flex-col hover:-translate-y-1 transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg, rgb(var(--primary)), #1a0d2a);">
+              <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="badge badge-blue">${c.code}</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">${c.title}</h3>
+          <div class="flex items-center gap-3 text-xs mt-1 muted">
+            <span>Grade ${c.grade}</span><span>•</span>
+            <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${c.duration_days} days</span>
+          </div>
+          <p class="muted text-sm mt-3 flex-1">${c.description}</p>
+          <div class="mt-5 flex items-center justify-between">
+            <div>
+              <div class="text-xs muted">Tuition</div>
+              <div class="text-xl font-black text-white">${zarFmt(c.price_zar)}</div>
+            </div>
+            ${session && session.user.role === "student" ?
+              (myEnrolledCourseIds.has(c.id)
+                ? `<span class="badge badge-green flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Enrolled</span>`
+                : `<button onclick="enrolNow('${c.id}')" class="btn btn-accent text-xs">Enrol <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>`)
+              : `<a href="#/register" onclick="nav('/register')" class="btn btn-ghost text-xs">Enrol <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>`
+            }
+          </div>
+        </div>`).join("")}
+    </div>
+  </section>`;
+}
+function enrolNow(courseId) {
+  if (!session || session.user.role !== "student") { alert("Login as a student to enrol."); nav("/login"); return; }
+  // prevent duplicate
+  const dup = DB.enrolments.find(e => e.student_id === session.user.id && e.course_id === courseId && ["pending","active","completed"].includes(e.status));
+  if (dup) return;
+  DB.enrolments.push({
+    id: "e_" + Date.now(),
+    student_id: session.user.id, course_id: courseId,
+    status: "pending", payment_status: "pending",
+    theory_mark: null, practical_mark: null, overall_mark: null,
+    enrolled_at: new Date().toISOString().slice(0,10),
+  });
+  alert("Enrolment created (pending payment). See your dashboard.");
+  nav("/dashboard");
+}
+
+/* --------- VERIFY --------- */
+function renderVerify() {
+  return `
+  <section class="max-w-4xl mx-auto px-6 py-16">
+    <div class="text-center mb-10">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold"
+            style="background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25); color:#93c5fd;">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> PUBLIC VERIFICATION
+      </span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mt-3">Verify a MJSCYBER Certificate</h1>
+      <p class="muted mt-3 max-w-xl mx-auto">Enter the unique serial printed on any MJSCYBER digital certificate to confirm its authenticity.</p>
+    </div>
+    <form onsubmit="event.preventDefault(); doVerify(this.serial.value)" class="flex gap-2 max-w-xl mx-auto">
+      <div class="relative flex-1">
+        <i data-lucide="scan-line" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+        <input name="serial" class="input pl-10 font-mono tracking-wider" placeholder="MJS-2026-XXXXXXXX" autocomplete="off" />
+      </div>
+      <button class="btn btn-accent"><i data-lucide="search" class="w-4 h-4"></i> Verify</button>
+    </form>
+    <p class="text-center text-xs muted mt-3">Try a seeded serial: <button class="underline" onclick="doVerify('MJS-2026-7AA45F6A')">MJS-2026-7AA45F6A</button></p>
+    <div id="verify-result" class="mt-10"></div>
+  </section>`;
+}
+function doVerify(serial) {
+  const s = (serial || "").trim().toUpperCase();
+  if (!s) return;
+  const c = DB.certificates.find(x => x.serial === s);
+  const el = $("#verify-result");
+  if (!c) {
+    el.innerHTML = `
+      <div class="card p-8 fade-up" style="border-color:rgba(239,68,68,.4); background: rgba(239,68,68,.06);">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: rgba(239,68,68,.2); border:1px solid rgba(239,68,68,.4);">
+            <i data-lucide="x-circle" class="w-6 h-6 text-red-400"></i>
+          </div>
+          <div>
+            <div class="text-red-300 font-bold text-xl">Certificate not found</div>
+            <div class="text-sm muted">The serial you entered doesn't match any certificate in our records.</div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    const row = (icon, label, value) => `
+      <div class="flex items-start gap-3">
+        <div class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-none">
+          <i data-lucide="${icon}" class="w-4 h-4 text-zinc-300"></i>
+        </div>
+        <div><div class="text-xs uppercase tracking-wider muted">${label}</div>
+             <div class="text-white font-semibold mt-0.5">${value}</div></div>
+      </div>`;
+    el.innerHTML = `
+      <div class="card p-8 md:p-10 fade-up" style="border-color: rgba(16,185,129,.4); background: linear-gradient(135deg, rgba(16,185,129,.1), transparent);">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: rgba(16,185,129,.2); border:1px solid rgba(16,185,129,.4);">
+            <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-400"></i>
+          </div>
+          <div>
+            <div class="text-emerald-300 font-bold text-xl">Certificate is valid</div>
+            <div class="text-xs muted">Issued by MJSCYBER PTY LTD (Reg 2022/201980/07)</div>
+          </div>
+        </div>
+        <dl class="grid md:grid-cols-2 gap-5">
+          ${row("user", "Student", esc(c.student_name))}
+          ${row("award", "Programme", `${esc(c.course_title)} (${esc(c.course_code)})`)}
+          ${row("shield-check", "Grade", esc(c.course_grade))}
+          ${row("award", "Overall Mark", c.overall_mark + "%")}
+          ${row("calendar", "Issued", new Date(c.issued_at).toLocaleDateString("en-ZA",{year:"numeric",month:"long",day:"numeric"}))}
+          ${row("scan-line", "Serial", `<span class="font-mono">${esc(c.serial)}</span>`)}
+        </dl>
+      </div>`;
+  }
+  refreshIcons();
+}
+
+/* --------- LOGIN / REGISTER --------- */
+function renderLogin() {
+  return `
+  <section class="grid md:grid-cols-2 min-h-[calc(100vh-4rem)]">
+    <div class="hidden md:flex flex-col justify-end p-10 relative"
+         style="background: linear-gradient(135deg, #0a1a3a, #1a0d1a);">
+      <i data-lucide="shield" class="w-10 h-10 mb-4" style="color: rgb(var(--accent));"></i>
+      <h2 class="text-4xl font-black text-white leading-tight">Welcome back,<br>Guardian.</h2>
+      <p class="text-zinc-300 mt-2">Access your training dashboard, certificates and service requests.</p>
+    </div>
+    <div class="flex items-center justify-center p-6 md:p-14">
+      <form class="w-full max-w-md" onsubmit="event.preventDefault(); tryLogin(this);">
+        <h1 class="text-3xl font-bold text-white">Sign in</h1>
+        <p class="muted mt-1">Enter your credentials to continue.</p>
+        <div class="mt-8 space-y-4">
+          <div>
+            <label class="label">Email</label>
+            <input name="email" type="email" autocomplete="email" required class="input" placeholder="you@example.com" />
+          </div>
+          <div>
+            <label class="label">Password</label>
+            <input name="password" type="password" autocomplete="current-password" required class="input" placeholder="••••••••" />
+          </div>
+          <div id="login-err" class="hidden text-sm text-red-300 bg-red-500/10 border border-red-500/30 px-3 py-2 rounded-lg"></div>
+          <button class="btn btn-accent w-full">Sign in</button>
+        </div>
+        <p class="mt-6 text-sm muted text-center">Don't have an account?
+          <a class="text-red-300 font-semibold" href="#/register" onclick="nav('/register')">Create one</a>
+        </p>
+        <div class="mt-8 card p-4">
+          <div class="text-xs uppercase tracking-widest text-zinc-400 font-semibold mb-3">Quick demo accounts</div>
+          <div class="space-y-2">
+            <button type="button" onclick="quickFill('admin@mjscyber.co.za','Admin@123')"
+              class="w-full text-left text-xs px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex justify-between">
+              <span class="text-red-300 font-semibold">Admin</span><span class="text-zinc-400">admin@mjscyber.co.za</span>
+            </button>
+            <button type="button" onclick="quickFill('thabo@student.co.za','Student@123')"
+              class="w-full text-left text-xs px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex justify-between">
+              <span class="text-blue-300 font-semibold">Student (Thabo)</span><span class="text-zinc-400">thabo@student.co.za</span>
+            </button>
+            <button type="button" onclick="quickFill('sipho@student.co.za','Student@123')"
+              class="w-full text-left text-xs px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex justify-between">
+              <span class="text-blue-300 font-semibold">Student (Sipho — pending pay)</span><span class="text-zinc-400">sipho@student.co.za</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>`;
+}
+function quickFill(e, p) {
+  const form = $("#view form"); if (!form) return;
+  form.email.value = e; form.password.value = p;
+}
+function tryLogin(form) {
+  try {
+    login(form.email.value.trim(), form.password.value);
+  } catch (e) {
+    const err = $("#login-err"); err.textContent = e.message; err.classList.remove("hidden");
+  }
+}
+
+function renderRegister() {
+  return `
+  <section class="grid md:grid-cols-2 min-h-[calc(100vh-4rem)]">
+    <div class="flex items-center justify-center p-6 md:p-14 order-2 md:order-1">
+      <form class="w-full max-w-md" onsubmit="event.preventDefault(); tryRegister(this);">
+        <h1 class="text-3xl font-bold text-white">Create your account</h1>
+        <p class="muted mt-1">Join MJSCYBER Security School.</p>
+        <div class="mt-8 space-y-4">
+          <div><label class="label">Full name</label><input name="name" class="input" required /></div>
+          <div><label class="label">Email</label><input name="email" type="email" class="input" required /></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="label">Phone</label><input name="phone" class="input" /></div>
+            <div><label class="label">SA ID</label><input name="id_number" class="input" /></div>
+          </div>
+          <div><label class="label">Password</label><input name="password" type="password" class="input" minlength="6" required /></div>
+          <div id="reg-err" class="hidden text-sm text-red-300 bg-red-500/10 border border-red-500/30 px-3 py-2 rounded-lg"></div>
+          <button class="btn btn-accent w-full">Create account</button>
+        </div>
+        <p class="mt-6 text-sm muted text-center">Already have an account?
+          <a class="text-red-300 font-semibold" href="#/login" onclick="nav('/login')">Sign in</a>
+        </p>
+      </form>
+    </div>
+    <div class="hidden md:flex flex-col justify-end p-10 relative order-1 md:order-2"
+         style="background: linear-gradient(225deg, #0a1a3a, #1a0d1a);">
+      <i data-lucide="shield" class="w-10 h-10 mb-4" style="color: rgb(var(--accent));"></i>
+      <h2 class="text-4xl font-black text-white leading-tight">Build a career <br>that protects.</h2>
+      <p class="text-zinc-300 mt-2">Enrol once and access every PSIRA grade, VIP protection, armed response and more.</p>
+    </div>
+  </section>`;
+}
+function tryRegister(form) {
+  const email = form.email.value.trim().toLowerCase();
+  if (DB.users.find(u => u.email === email)) {
+    const err = $("#reg-err"); err.textContent = "Email already registered"; err.classList.remove("hidden"); return;
+  }
+  const user = { id: "u_" + Date.now(), email, password: form.password.value, name: form.name.value,
+                 phone: form.phone.value, id_number: form.id_number.value, role: "student" };
+  DB.users.push(user);
+  session = { user };
+  nav("/dashboard");
+}
+
+/* --------- STUDENT DASHBOARD --------- */
+function renderStudent() {
+  const u = session.user;
+  const myEnrols = DB.enrolments.filter(e => e.student_id === u.id);
+  const myCerts  = DB.certificates.filter(c => c.student_id === u.id);
+  const myVip    = DB.vip_requests.filter(r => r.created_by === u.id);
+  const mySite   = DB.site_security.filter(r => r.created_by === u.id);
+
+  const enrolCard = e => {
+    const c = DB.courses.find(x => x.id === e.course_id) || {};
+    const badge = e.status === "pending" ? "badge-amber" : e.status === "active" ? "badge-blue"
+                : e.status === "completed" ? "badge-green" : e.status === "failed" ? "badge-red" : "badge-zinc";
+    return `<div class="card p-5">
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <div class="text-white font-bold">${esc(c.title)}</div>
+          <div class="text-xs muted">${esc(c.code)} · Grade ${esc(c.grade)}</div>
+        </div>
+        <span class="badge ${badge}">${e.status}</span>
+      </div>
+      <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div class="card-glass py-2"><div class="text-xs muted">Theory</div><div class="text-white font-bold">${e.theory_mark ?? "—"}</div></div>
+        <div class="card-glass py-2"><div class="text-xs muted">Practical</div><div class="text-white font-bold">${e.practical_mark ?? "—"}</div></div>
+        <div class="card-glass py-2"><div class="text-xs muted">Overall</div><div class="text-white font-bold">${e.overall_mark ?? "—"}</div></div>
+      </div>
+      <div class="mt-3 flex items-center justify-between flex-wrap gap-2">
+        <div class="text-xs muted flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> Enrolled ${e.enrolled_at}</div>
+        ${e.status==="pending" && e.payment_status!=="paid"
+          ? `<button onclick="payNow('${e.id}')" class="btn btn-accent text-xs"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Pay ${zarFmt(c.price_zar)}</button>`
+          : (e.payment_status==="paid" ? `<span class="badge badge-green">Paid</span>` : "")}
+      </div>
+    </div>`;
+  };
+
+  const certCard = c => `
+    <div class="card p-5" style="border-color: rgba(16,185,129,.3); background: linear-gradient(135deg, rgba(16,185,129,.08), transparent);">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(16,185,129,.2); border:1px solid rgba(16,185,129,.4);">
+          <i data-lucide="award" class="w-5 h-5 text-emerald-400"></i>
+        </div>
+        <div class="flex-1">
+          <div class="text-white font-bold">${esc(c.course_title)}</div>
+          <div class="text-xs muted">${esc(c.course_code)} · Grade ${esc(c.course_grade)}</div>
+        </div>
+        <span class="badge badge-green">${c.overall_mark}%</span>
+      </div>
+      <div class="mt-4 card-glass p-3 font-mono text-sm text-blue-300 flex items-center justify-between">
+        ${esc(c.serial)}
+        <div class="flex gap-2">
+          <button onclick="downloadCertText('${c.id}')" class="text-xs text-zinc-200 hover:text-white flex items-center gap-1 px-2 py-1 rounded bg-white/5">
+            <i data-lucide="download" class="w-3 h-3"></i> Save
+          </button>
+          <a href="#/verify/${c.serial}" onclick="nav('/verify/${c.serial}')" class="text-xs text-zinc-200 hover:text-white flex items-center gap-1 px-2 py-1 rounded bg-white/5">
+            <i data-lucide="scan-line" class="w-3 h-3"></i> Verify
+          </a>
+        </div>
+      </div>
+    </div>`;
+
+  const reqList = (rows, kind) => rows.length === 0
+    ? `<p class="muted text-sm">No requests yet.</p>`
+    : rows.map(r => `<li class="card-glass p-3 flex items-center justify-between">
+        <div>
+          <div class="text-white text-sm font-medium">${esc(r.client_name || r.site_name)}</div>
+          <div class="text-xs muted">${esc(r.location)} · ${r.start_date} → ${r.end_date}</div>
+        </div>
+        <span class="badge ${r.status==='approved'?'badge-green':r.status==='rejected'?'badge-red':'badge-amber'}">${r.status}</span>
+      </li>`).join("");
+
+  return `
+  <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex items-end justify-between flex-wrap gap-3 mb-8">
+      <div>
+        <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">Student dashboard</div>
+        <h1 class="text-3xl md:text-4xl font-bold text-white mt-2">Hello, ${esc(u.name.split(" ")[0])} 👋</h1>
+        <p class="muted mt-1">Track your enrolments, certificates and service requests.</p>
+      </div>
+      <a href="#/courses" onclick="nav('/courses')" class="btn btn-primary"><i data-lucide="book-open" class="w-4 h-4"></i> Browse Courses</a>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      ${[
+        ["clipboard-list","Enrolments",myEnrols.length,"blue"],
+        ["award","Certificates",myCerts.length,"emerald"],
+        ["user-cog","VIP Requests",myVip.length,"red"],
+        ["building","Site Requests",mySite.length,"amber"],
+      ].map(([i,l,v,c]) => `
+        <div class="card p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center border"
+               style="background:rgba(${c==='blue'?'59,130,246':c==='emerald'?'16,185,129':c==='red'?'239,68,68':'245,158,11'},.15); border-color:rgba(${c==='blue'?'59,130,246':c==='emerald'?'16,185,129':c==='red'?'239,68,68':'245,158,11'},.3);">
+            <i data-lucide="${i}" class="w-5 h-5" style="color:${c==='blue'?'#93c5fd':c==='emerald'?'#6ee7b7':c==='red'?'#fca5a5':'#fcd34d'};"></i>
+          </div>
+          <div><div class="text-3xl font-black text-white leading-none">${v}</div>
+               <div class="text-xs muted mt-1">${l}</div></div>
+        </div>`).join("")}
+    </div>
+
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-white mb-4">My Enrolments</h2>
+      ${myEnrols.length === 0
+        ? `<div class="card p-8 text-center"><p class="muted mb-4">You haven't enrolled in any courses yet.</p><a href="#/courses" onclick="nav('/courses')" class="btn btn-accent">Browse Courses</a></div>`
+        : `<div class="grid md:grid-cols-2 gap-4">${myEnrols.map(enrolCard).join("")}</div>`}
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-white mb-4">My Certificates</h2>
+      ${myCerts.length === 0
+        ? `<div class="card p-6 text-center muted">Certificates appear here once you pass a programme.</div>`
+        : `<div class="grid md:grid-cols-2 gap-4">${myCerts.map(certCard).join("")}</div>`}
+    </section>
+
+    <section class="mb-12">
+      <div class="flex items-end justify-between flex-wrap gap-3 mb-4">
+        <h2 class="text-xl font-bold text-white">My Service Requests</h2>
+        <div class="flex gap-2">
+          <button onclick="openServiceModal('vip')"  class="btn btn-ghost text-sm"><i data-lucide="plus" class="w-3.5 h-3.5"></i> VIP</button>
+          <button onclick="openServiceModal('site')" class="btn btn-ghost text-sm"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Site Security</button>
+        </div>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-5">
+        <div class="card p-5"><h3 class="text-white font-semibold mb-3">VIP Protection</h3><ul class="space-y-2">${reqList(myVip,"vip")}</ul></div>
+        <div class="card p-5"><h3 class="text-white font-semibold mb-3">Site Security</h3><ul class="space-y-2">${reqList(mySite,"site")}</ul></div>
+      </div>
+    </section>
+  </section>`;
+}
+function payNow(enrolmentId) {
+  const e = DB.enrolments.find(x => x.id === enrolmentId);
+  if (!e) return;
+  const c = DB.courses.find(x => x.id === e.course_id);
+  if (!confirm(`Proceed to pay ${zarFmt(c.price_zar)} for ${c.title}?\n(This is a simulated payment in the HTML prototype.)`)) return;
+  e.payment_status = "paid"; e.status = "active";
+  alert("Payment successful! Your enrolment is now active.");
+  render();
+}
+function downloadCertText(certId) {
+  const c = DB.certificates.find(x => x.id === certId);
+  if (!c) return;
+  const txt =
+`========================================================
+ MJSCYBER PTY LTD — DIGITAL CERTIFICATE OF COMPETENCY
+========================================================
+
+  This is to certify that
+
+      ${c.student_name.toUpperCase()}
+
+  has successfully completed
+
+      ${c.course_title}  (${c.course_code})
+      Grade ${c.course_grade}  ·  Overall Mark: ${c.overall_mark}%
+
+  Issued:  ${c.issued_at}
+  Serial:  ${c.serial}
+  Issuer:  MJSCYBER PTY LTD (Reg 2022/201980/07)
+
+  Verify online at: mjscyber.co.za/verify/${c.serial}
+========================================================`;
+  const blob = new Blob([txt], { type:"text/plain" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `MJSCYBER_${c.serial}.txt`; a.click();
+}
+
+/* --------- SERVICE MODALS --------- */
+function openServiceModal(kind) {
+  const isVip = kind === "vip";
+  $("#modal-root").innerHTML = `
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="card p-6 max-w-xl w-full">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="text-xl font-bold text-white">${isVip ? "Request VIP Protection" : "Request Site Security"}</h3>
+        <button onclick="closeModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="event.preventDefault(); saveService('${kind}', this);" class="space-y-3">
+        ${isVip
+          ? `<label class="block"><span class="label">Client name</span><input name="client_name" class="input" required /></label>
+             <label class="block"><span class="label">Contact</span><input name="contact" class="input" required /></label>`
+          : `<label class="block"><span class="label">Site name</span><input name="site_name" class="input" required /></label>
+             <label class="block"><span class="label">Shift type</span>
+               <select name="shift_type" class="input"><option value="day">Day</option><option value="night">Night</option><option value="24-7">24/7</option></select></label>`}
+        <label class="block"><span class="label">Location</span><input name="location" class="input" required /></label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block"><span class="label">Start</span><input name="start_date" type="date" class="input" required /></label>
+          <label class="block"><span class="label">End</span><input name="end_date" type="date" class="input" required /></label>
+        </div>
+        <label class="block"><span class="label">Guards needed</span><input name="guards_needed" type="number" min="1" value="2" class="input" required /></label>
+        <label class="block"><span class="label">Details</span><textarea name="details" rows="3" class="input"></textarea></label>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeModal()" class="btn btn-ghost">Cancel</button><button class="btn btn-accent">Submit</button></div>
+      </form>
+    </div>
+  </div>`;
+  refreshIcons();
+}
+function closeModal() { $("#modal-root").innerHTML = ""; }
+function saveService(kind, form) {
+  const data = Object.fromEntries(new FormData(form).entries());
+  const base = {
+    id: kind+"_"+Date.now(), created_by: session.user.id,
+    status:"pending", location:data.location, start_date:data.start_date, end_date:data.end_date,
+    guards_needed: Number(data.guards_needed), details: data.details,
+  };
+  if (kind === "vip") {
+    DB.vip_requests.push({ ...base, client_name:data.client_name, contact:data.contact });
+  } else {
+    DB.site_security.push({ ...base, site_name:data.site_name, shift_type:data.shift_type });
+  }
+  closeModal(); render();
+}
+
+/* --------- ADMIN DASHBOARD --------- */
+let adminTab = "overview";
+const adminTabs = [
+  ["overview","Overview"], ["enrolments","Enrolments"], ["students","Students"],
+  ["courses","Courses"], ["certificates","Certificates"], ["vip","VIP Requests"], ["site","Site Security"],
+];
+
+function renderAdmin() {
+  return `
+  <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-8">
+      <div class="text-xs uppercase tracking-widest font-semibold" style="color: rgb(var(--accent-2));">MJSCYBER Control Centre</div>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mt-2">Admin Dashboard</h1>
+      <p class="muted mt-1">Manage students, enrolments, certificates and service requests.</p>
+    </div>
+    <div class="flex gap-1 overflow-x-auto mb-8 pb-1 border-b border-white/10">
+      ${adminTabs.map(([id,l]) => `
+        <button onclick="setTab('${id}')"
+          class="px-4 py-2 text-sm font-medium rounded-t-lg transition ${adminTab===id?"text-white bg-white/5":"text-zinc-400 hover:text-zinc-200"}"
+          style="${adminTab===id?'border-bottom: 2px solid rgb(var(--accent));':''}">${l}</button>
+      `).join("")}
+    </div>
+    <div id="admin-content">${renderAdminContent()}</div>
+  </section>`;
+}
+function setTab(id) { adminTab = id; $("#admin-content").innerHTML = renderAdminContent(); refreshIcons(); }
+function renderAdminContent() {
+  switch (adminTab) {
+    case "overview":     return renderAdminOverview();
+    case "enrolments":   return renderAdminEnrolments();
+    case "students":     return renderAdminStudents();
+    case "courses":      return renderAdminCourses();
+    case "certificates": return renderAdminCerts();
+    case "vip":          return renderAdminService("vip");
+    case "site":         return renderAdminService("site");
+  }
+  return "";
+}
+function renderAdminOverview() {
+  const students = DB.users.filter(u => u.role === "student").length;
+  const activeCourses = DB.courses.filter(c => c.active).length;
+  const pending = DB.enrolments.filter(e => e.status === "pending").length;
+  const active  = DB.enrolments.filter(e => e.status === "active").length;
+  const completed = DB.enrolments.filter(e => e.status === "completed").length;
+  const certs = DB.certificates.length;
+  const vipPending  = DB.vip_requests.filter(r => r.status === "pending").length;
+  const sitePending = DB.site_security.filter(r => r.status === "pending").length;
+  const revenue = DB.enrolments.filter(e => e.payment_status === "paid")
+    .reduce((sum, e) => sum + (DB.courses.find(c => c.id === e.course_id)?.price_zar || 0), 0);
+
+  const items = [
+    ["users","Students",students,"blue"],
+    ["book-open","Active Courses",activeCourses,"emerald"],
+    ["clipboard-list","Pending Enrolments",pending,"amber"],
+    ["check-circle-2","Active Enrolments",active,"blue"],
+    ["award","Certificates Issued",certs,"emerald"],
+    ["user-cog","VIP Pending",vipPending,"red"],
+    ["building","Site Pending",sitePending,"red"],
+    ["wallet","Revenue (ZAR)",zarFmt(revenue),"emerald"],
+  ];
+  return `<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    ${items.map(([i,l,v,c]) => `
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center border"
+             style="background:rgba(${c==='blue'?'59,130,246':c==='emerald'?'16,185,129':c==='red'?'239,68,68':'245,158,11'},.15); border-color:rgba(${c==='blue'?'59,130,246':c==='emerald'?'16,185,129':c==='red'?'239,68,68':'245,158,11'},.3);">
+          <i data-lucide="${i}" class="w-5 h-5" style="color:${c==='blue'?'#93c5fd':c==='emerald'?'#6ee7b7':c==='red'?'#fca5a5':'#fcd34d'};"></i>
+        </div>
+        <div><div class="text-2xl font-black text-white leading-none">${v}</div>
+             <div class="text-xs muted mt-1">${l}</div></div>
+      </div>`).join("")}
+  </div>`;
+}
+function renderAdminEnrolments() {
+  return `<div class="card p-5 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead><tr class="text-left muted border-b border-white/10">
+        <th class="py-2 px-2 text-xs uppercase">Student</th><th class="py-2 px-2 text-xs uppercase">Course</th><th class="py-2 px-2 text-xs uppercase">Status</th><th class="py-2 px-2 text-xs uppercase">Marks</th><th class="py-2 px-2 text-xs uppercase">Actions</th>
+      </tr></thead>
+      <tbody>${DB.enrolments.map(e => {
+        const u = DB.users.find(x => x.id === e.student_id) || {};
+        const c = DB.courses.find(x => x.id === e.course_id) || {};
+        return `<tr class="border-b border-white/5 hover:bg-white/5">
+          <td class="py-3 px-2"><div class="text-white">${esc(u.name)}</div><div class="text-xs muted">${esc(u.email)}</div></td>
+          <td class="py-3 px-2">${esc(c.title)} <span class="text-xs muted">(${esc(c.code)})</span></td>
+          <td class="py-3 px-2"><span class="badge ${e.status==='pending'?'badge-amber':e.status==='active'?'badge-blue':e.status==='completed'?'badge-green':'badge-red'}">${e.status}</span></td>
+          <td class="py-3 px-2 font-mono text-xs">T ${e.theory_mark ?? "—"} · P ${e.practical_mark ?? "—"} · O ${e.overall_mark ?? "—"}</td>
+          <td class="py-3 px-2">
+            <div class="flex flex-wrap gap-2">
+              ${e.status==='pending' ? `<button onclick="approveEnrol('${e.id}')" class="btn btn-ghost text-xs">Approve</button>` : ""}
+              ${(e.status==='active'||e.status==='completed') ? `<button onclick="openGradeModal('${e.id}')" class="btn btn-ghost text-xs"><i data-lucide="pencil" class="w-3 h-3"></i> Grade</button>` : ""}
+              ${e.status==='completed' && !DB.certificates.find(c => c.enrolment_id===e.id)
+                ? `<button onclick="issueCert('${e.id}')" class="btn btn-accent text-xs"><i data-lucide="award" class="w-3 h-3"></i> Issue cert</button>` : ""}
+            </div>
+          </td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table>
+  </div>`;
+}
+function approveEnrol(id) {
+  const e = DB.enrolments.find(x => x.id === id);
+  if (e) { e.status = "active"; e.payment_status = "paid"; setTab("enrolments"); }
+}
+function openGradeModal(id) {
+  const e = DB.enrolments.find(x => x.id === id);
+  if (!e) return;
+  $("#modal-root").innerHTML = `
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="card p-6 max-w-md w-full">
+      <div class="flex justify-between mb-4">
+        <h3 class="text-xl font-bold text-white">Grade enrolment</h3>
+        <button onclick="closeModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="event.preventDefault(); saveGrade('${id}', this);" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <label><span class="label">Theory (0-100)</span><input name="theory" type="number" min="0" max="100" required value="${e.theory_mark ?? 0}" class="input"/></label>
+          <label><span class="label">Practical (0-100)</span><input name="practical" type="number" min="0" max="100" required value="${e.practical_mark ?? 0}" class="input"/></label>
+        </div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeModal()" class="btn btn-ghost">Cancel</button><button class="btn btn-accent">Save grades</button></div>
+      </form>
+    </div>
+  </div>`;
+  refreshIcons();
+}
+function saveGrade(id, form) {
+  const e = DB.enrolments.find(x => x.id === id);
+  const t = Number(form.theory.value), p = Number(form.practical.value);
+  const o = Math.round((t + p) / 2 * 100) / 100;
+  e.theory_mark = t; e.practical_mark = p; e.overall_mark = o;
+  e.status = o >= 50 ? "completed" : "failed";
+  closeModal(); setTab("enrolments");
+}
+function issueCert(enrolmentId) {
+  const e = DB.enrolments.find(x => x.id === enrolmentId);
+  if (!e || e.status !== "completed") return alert("Enrolment must be completed (>= 50%).");
+  if (DB.certificates.find(c => c.enrolment_id === enrolmentId)) return alert("Already issued.");
+  const u = DB.users.find(x => x.id === e.student_id);
+  const c = DB.courses.find(x => x.id === e.course_id);
+  DB.certificates.push({
+    id: "k_"+Date.now(), serial: newSerial(), enrolment_id: enrolmentId, student_id: e.student_id,
+    student_name: u.name, course_title: c.title, course_code: c.code, course_grade: c.grade,
+    overall_mark: e.overall_mark, issued_at: new Date().toISOString().slice(0,10),
+  });
+  setTab("certificates");
+}
+function renderAdminStudents() {
+  const rows = DB.users.filter(u => u.role === "student");
+  return `<div class="card p-5 overflow-x-auto"><table class="w-full text-sm">
+    <thead><tr class="text-left muted border-b border-white/10">
+      <th class="py-2 px-2 text-xs uppercase">Name</th><th class="py-2 px-2 text-xs uppercase">Email</th><th class="py-2 px-2 text-xs uppercase">Phone</th><th class="py-2 px-2 text-xs uppercase">ID</th>
+    </tr></thead>
+    <tbody>${rows.map(u => `<tr class="border-b border-white/5">
+      <td class="py-3 px-2 text-white">${esc(u.name)}</td><td class="py-3 px-2">${esc(u.email)}</td>
+      <td class="py-3 px-2">${esc(u.phone||"—")}</td><td class="py-3 px-2 font-mono text-xs">${esc(u.id_number||"—")}</td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+function renderAdminCourses() {
+  return `<div class="card p-5 overflow-x-auto">
+    <div class="flex justify-between mb-4">
+      <p class="text-sm muted">${DB.courses.length} courses</p>
+      <button onclick="openCourseModal()" class="btn btn-accent text-sm"><i data-lucide="plus" class="w-4 h-4"></i> Add Course</button>
+    </div>
+    <table class="w-full text-sm">
+      <thead><tr class="text-left muted border-b border-white/10">
+        <th class="py-2 px-2 text-xs uppercase">Code</th><th class="py-2 px-2 text-xs uppercase">Title</th><th class="py-2 px-2 text-xs uppercase">Grade</th><th class="py-2 px-2 text-xs uppercase">Duration</th><th class="py-2 px-2 text-xs uppercase">Price</th><th class="py-2 px-2 text-xs uppercase">Status</th><th class="py-2 px-2 text-xs uppercase">Actions</th>
+      </tr></thead>
+      <tbody>${DB.courses.map(c => `<tr class="border-b border-white/5">
+        <td class="py-3 px-2 font-mono text-xs text-blue-300">${esc(c.code)}</td>
+        <td class="py-3 px-2 text-white">${esc(c.title)}</td>
+        <td class="py-3 px-2">${esc(c.grade)}</td>
+        <td class="py-3 px-2">${c.duration_days} d</td>
+        <td class="py-3 px-2">${zarFmt(c.price_zar)}</td>
+        <td class="py-3 px-2"><span class="badge ${c.active?'badge-green':'badge-zinc'}">${c.active?'Active':'Archived'}</span></td>
+        <td class="py-3 px-2"><button onclick="toggleCourse('${c.id}')" class="btn btn-ghost text-xs">${c.active?'Archive':'Restore'}</button></td>
+      </tr>`).join("")}</tbody>
+    </table>
+  </div>`;
+}
+function toggleCourse(id) { const c = DB.courses.find(x=>x.id===id); if (c) c.active = !c.active; setTab("courses"); }
+function openCourseModal() {
+  $("#modal-root").innerHTML = `
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="card p-6 max-w-lg w-full">
+      <div class="flex justify-between mb-4">
+        <h3 class="text-xl font-bold text-white">Add a new course</h3>
+        <button onclick="closeModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form onsubmit="event.preventDefault(); saveCourse(this);" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <label><span class="label">Code</span><input name="code" class="input font-mono" required /></label>
+          <label><span class="label">Grade</span><input name="grade" class="input" required /></label>
+        </div>
+        <label class="block"><span class="label">Title</span><input name="title" class="input" required /></label>
+        <label class="block"><span class="label">Description</span><textarea name="description" rows="2" class="input" required></textarea></label>
+        <div class="grid grid-cols-2 gap-3">
+          <label><span class="label">Duration (days)</span><input name="duration_days" type="number" min="1" value="5" class="input" required /></label>
+          <label><span class="label">Price (ZAR)</span><input name="price_zar" type="number" min="0" value="1500" class="input" required /></label>
+        </div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeModal()" class="btn btn-ghost">Cancel</button><button class="btn btn-accent">Create</button></div>
+      </form>
+    </div>
+  </div>`;
+  refreshIcons();
+}
+function saveCourse(form) {
+  const d = Object.fromEntries(new FormData(form).entries());
+  if (DB.courses.find(c => c.code === d.code)) return alert("Course code already exists.");
+  DB.courses.push({ id:"c_"+Date.now(), code:d.code, title:d.title, grade:d.grade, description:d.description,
+    duration_days: Number(d.duration_days), price_zar: Number(d.price_zar), active: true });
+  closeModal(); setTab("courses");
+}
+function renderAdminCerts() {
+  return `<div class="card p-5 overflow-x-auto"><table class="w-full text-sm">
+    <thead><tr class="text-left muted border-b border-white/10">
+      <th class="py-2 px-2 text-xs uppercase">Serial</th><th class="py-2 px-2 text-xs uppercase">Student</th><th class="py-2 px-2 text-xs uppercase">Programme</th><th class="py-2 px-2 text-xs uppercase">Mark</th><th class="py-2 px-2 text-xs uppercase">Issued</th>
+    </tr></thead>
+    <tbody>${DB.certificates.map(c => `<tr class="border-b border-white/5">
+      <td class="py-3 px-2 font-mono text-xs text-blue-300">${esc(c.serial)}</td>
+      <td class="py-3 px-2 text-white">${esc(c.student_name)}</td>
+      <td class="py-3 px-2">${esc(c.course_title)} <span class="text-xs muted">(${esc(c.course_code)})</span></td>
+      <td class="py-3 px-2">${c.overall_mark}%</td>
+      <td class="py-3 px-2 text-xs muted">${c.issued_at}</td>
+    </tr>`).join("")}</tbody>
+  </table>${DB.certificates.length===0?'<p class="muted text-center py-10">No certificates issued yet.</p>':''}</div>`;
+}
+function renderAdminService(kind) {
+  const rows = kind === "vip" ? DB.vip_requests : DB.site_security;
+  return `<div class="card p-5 overflow-x-auto">
+    <h3 class="text-white font-semibold mb-4">${kind==="vip"?"VIP Protection Requests":"Site Security Requests"}</h3>
+    <table class="w-full text-sm">
+      <thead><tr class="text-left muted border-b border-white/10">
+        <th class="py-2 px-2 text-xs uppercase">${kind==='vip'?'Client':'Site'}</th><th class="py-2 px-2 text-xs uppercase">Location</th><th class="py-2 px-2 text-xs uppercase">Dates</th><th class="py-2 px-2 text-xs uppercase">Guards</th><th class="py-2 px-2 text-xs uppercase">Status</th><th class="py-2 px-2 text-xs uppercase">Actions</th>
+      </tr></thead>
+      <tbody>${rows.map(r => `<tr class="border-b border-white/5">
+        <td class="py-3 px-2 text-white">${esc(r.client_name||r.site_name)}</td>
+        <td class="py-3 px-2">${esc(r.location)}</td>
+        <td class="py-3 px-2 text-xs">${r.start_date} → ${r.end_date}</td>
+        <td class="py-3 px-2">${r.guards_needed}</td>
+        <td class="py-3 px-2"><span class="badge ${r.status==='approved'?'badge-green':r.status==='rejected'?'badge-red':'badge-amber'}">${r.status}</span></td>
+        <td class="py-3 px-2">${r.status==='pending'?`
+          <div class="flex gap-2">
+            <button onclick="updateService('${kind}','${r.id}','approved')" class="btn btn-ghost text-xs text-emerald-300">Approve</button>
+            <button onclick="updateService('${kind}','${r.id}','rejected')" class="btn btn-ghost text-xs text-red-300">Reject</button>
+          </div>`:""}</td>
+      </tr>`).join("")}</tbody>
+    </table>${rows.length===0?'<p class="muted text-center py-10">No requests yet.</p>':''}
+  </div>`;
+}
+function updateService(kind, id, status) {
+  const list = kind === "vip" ? DB.vip_requests : DB.site_security;
+  const r = list.find(x => x.id === id); if (r) r.status = status;
+  setTab(kind);
+}
+
+/* -------- Boot -------- */
+window.addEventListener("DOMContentLoaded", () => {
+  currentRoute = location.hash.slice(1) || "/";
+  render();
+});
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

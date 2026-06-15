@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MJSCYBER - Cyber Security Training Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { color-scheme: dark; }
+body { font-family: 'Inter', sans-serif; background: #0a0a0b; color: #e4e4e7; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.glass { backdrop-filter: blur(16px); background: rgba(10,10,11,0.85); }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn { from {opacity:0; transform:translateY(10px)} to {opacity:1; transform:none} }
+.gradient-text { background: linear-gradient(135deg, #ef4444, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.demo-card:hover { border-color: #ef4444 !important; transform: translateY(-2px); transition: all 0.2s; }
+</style>
+</head>
+<body class="min-h-screen">
+<!-- Header -->
+<header class="sticky top-0 z-50 border-b border-zinc-800 glass">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center font-bold text-white shadow-lg shadow-red-900/30">M</div>
+        <div>
+          <div class="font-extrabold text-lg leading-none tracking-tight">MJSCYBER</div>
+          <div class="text-[10px] text-zinc-500 -mt-0.5 mono">SECURE • TRAIN • CERTIFY</div>
+        </div>
+      </div>
+      
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <button onclick="showPage('home')" class="hover:text-white text-zinc-400 transition">Home</button>
+        <button onclick="showPage('courses')" class="hover:text-white text-zinc-400 transition">Courses</button>
+        <button onclick="showPage('home')" class="hover:text-white text-zinc-400 transition">About</button>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <div id="header-demo" class="hidden sm:flex items-center gap-2 text-xs bg-zinc-900/70 border border-zinc-800 px-3 py-1.5 rounded-full">
+          <span class="text-zinc-500">Demo:</span>
+          <button onclick="demoLogin('admin')" class="text-red-400 hover:text-red-300 font-medium">Admin</button>
+          <span class="text-zinc-700">|</span>
+          <button onclick="demoLogin('student')" class="text-red-400 hover:text-red-300 font-medium">Student</button>
+        </div>
+        
+        <button id="btn-login" onclick="showPage('login')" class="bg-white text-black px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-200 transition">Login</button>
+        
+        <div id="user-menu" class="hidden items-center gap-3">
+          <div class="text-right hidden sm:block">
+            <div id="user-name" class="text-sm font-medium leading-tight"></div>
+            <div id="user-email" class="text-xs text-zinc-500 leading-tight"></div>
+          </div>
+          <button onclick="logout()" class="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-red-900 transition" title="Logout">
+            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Demo Banner -->
+<div class="bg-gradient-to-r from-red-950/50 via-orange-950/40 to-red-950/50 border-y border-red-900/40">
+  <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-2.5 text-sm">
+    <span class="animate-pulse">👉</span>
+    <span class="text-zinc-300">Try the demo instantly:</span>
+    <button onclick="showPage('login')" class="text-red-400 font-semibold underline underline-offset-2 hover:text-red-300">Login</button>
+    <span class="text-zinc-500">→</span>
+    <span>Choose <strong class="text-white">Admin</strong> or <strong class="text-white">Student</strong></span>
+    <span class="hidden md:inline-flex items-center gap-1 ml-2 px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[10px] text-red-400 mono">NO PASSWORD</span>
+  </div>
+</div>
+
+<main>
+<!-- HOME -->
+<section id="page-home" class="page active">
+  <div class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-900/20 via-transparent to-transparent"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 relative">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs mb-6">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <span class="text-zinc-400">MICT SETA Accredited • QCTO Aligned</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
+            Cyber Security
+            <span class="gradient-text block">Training That Gets You Hired</span>
+          </h1>
+          <p class="text-lg text-zinc-400 mb-8 max-w-xl">From Bochum to Sandton. Practical, hands-on cybersecurity courses with real labs, industry certificates, and job placement support.</p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="showPage('courses')" class="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-semibold shadow-lg shadow-red-900/30 transition">Browse Courses</button>
+            <button onclick="showPage('login')" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl font-semibold transition">Start Demo →</button>
+          </div>
+          <div class="flex items-center gap-6 mt-10 text-sm text-zinc-500">
+            <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> NSFAS Approved</div>
+            <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> 94% Placement Rate</div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="relative bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-sm font-semibold">Live Enrolment Portal</div>
+              <div class="text-xs px-2 py-1 rounded bg-green-500/10 text-green-400 border border-green-500/20">DEMO ACTIVE</div>
+            </div>
+            <div class="space-y-3">
+              <div class="p-4 rounded-xl bg-black/50 border border-zinc-800">
+                <div class="text-xs text-zinc-500 mb-1">Most Popular</div>
+                <div class="font-semibold">Cyber Security Fundamentals</div>
+                <div class="text-sm text-zinc-400">8 weeks • NQF 5 • R4,999</div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <button onclick="enrollClick('Cyber Security Fundamentals','R4,999')" class="p-3 rounded-xl bg-red-600 hover:bg-red-500 text-sm font-semibold transition">Enrol Now</button>
+                <button onclick="showPage('login')" class="p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm font-medium border border-zinc-700 transition">Demo Login</button>
+              </div>
+              <div class="pt-3 border-t border-zinc-800 text-xs text-zinc-500">
+                ✓ Click "Demo Login" → Select Admin or Student → Instant access, pre-filled forms
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="page-courses" class="page">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold mb-2">Available Courses</h2>
+        <p class="text-zinc-400">Click "Enrol" to test the full flow with demo accounts</p>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-red-950/50 border border-red-900 text-red-300">
+        <span>⚡</span> Demo enrolment takes 60 seconds
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Course 1 -->
+      <div class="group bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-700 transition">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600/20 to-orange-600/20 border border-red-900/50 flex items-center justify-center text-2xl">🛡️</div>
+          <span class="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-400">Beginner</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Cyber Security Fundamentals</h3>
+        <p class="text-sm text-zinc-400 mb-4">NQF Level 5 • 8 weeks • Hands-on labs</p>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-2xl font-bold">R4,999</span>
+          <span class="text-sm text-zinc-500 line-through">R7,500</span>
+        </div>
+        <button onclick="enrollClick('Cyber Security Fundamentals','R4,999')" class="w-full py-3 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition group-hover:shadow-lg">Enrol Now</button>
+      </div>
+
+      <!-- Course 2 -->
+      <div class="group bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-700 transition">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border border-blue-900/50 flex items-center justify-center text-2xl">🔍</div>
+          <span class="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-400">Intermediate</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Ethical Hacking & Pentesting</h3>
+        <p class="text-sm text-zinc-400 mb-4">NQF Level 6 • 12 weeks • CEH Prep</p>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-2xl font-bold">R8,999</span>
+          <span class="text-sm text-zinc-500 line-through">R12,000</span>
+        </div>
+        <button onclick="enrollClick('Ethical Hacking & Pentesting','R8,999')" class="w-full py-3 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition">Enrol Now</button>
+      </div>
+
+      <!-- Course 3 -->
+      <div class="group bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-700 transition">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-900/50 flex items-center justify-center text-2xl">🚨</div>
+          <span class="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-400">Advanced</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2">SOC Analyst Bootcamp</h3>
+        <p class="text-sm text-zinc-400 mb-4">NQF Level 6 • 16 weeks • Job ready</p>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-2xl font-bold">R14,999</span>
+          <span class="text-sm text-zinc-500 line-through">R19,999</span>
+        </div>
+        <button onclick="enrollClick('SOC Analyst Bootcamp','R14,999')" class="w-full py-3 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition">Enrol Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="page-login" class="page">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid lg:grid-cols-5 gap-8 items-start">
+      <div class="lg:col-span-3">
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold mb-2">Welcome back</h2>
+          <p class="text-zinc-400">Login to continue your enrolment or access your dashboard</p>
+        </div>
+
+        <!-- DEMO CARDS - PROMINENT -->
+        <div style="background:#1a1a1b; border:2px solid #ef4444; padding:20px; border-radius:12px; margin:20px 0;" id="demo-highlight">
+          <h3 style="color:#ef4444; margin-top:0; font-size: 1.125rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">🚀 QUICK DEMO ACCESS</h3>
+          <p style="color: #d4d4d8; margin: 8px 0 16px;">Click to login instantly - no password needed</p>
+          
+          <div onclick="demoLogin('admin')" class="demo-card" style="background:#0a0a0b; padding:15px; margin:10px 0; border-radius:8px; cursor:pointer; border:1px solid #262626; transition: all 0.2s;">
+            <strong style="font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">👨‍💼 ADMIN DEMO</strong>
+            <span style="color:#a1a1aa; font-size:14px; margin-top: 4px; display: block;">admin@mjsyber.co.za | Full access to all dashboards</span>
+          </div>
+          
+          <div onclick="demoLogin('student')" class="demo-card" style="background:#0a0a0b; padding:15px; margin:10px 0; border-radius:8px; cursor:pointer; border:1px solid #262626; transition: all 0.2s;">
+            <strong style="font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">🎓 STUDENT DEMO</strong>
+            <span style="color:#a1a1aa; font-size:14px; margin-top: 4px; display: block;">thabo@student.co.za | Thabo Mokoena - View enrolments & certificates</span>
+          </div>
+        </div>
+
+        <div class="mt-8 p-4 rounded-xl bg-amber-950/20 border border-amber-900/30">
+          <div class="flex gap-3">
+            <div class="text-amber-400 text-xl">💡</div>
+            <div class="text-sm">
+              <div class="font-semibold text-amber-200 mb-1">Testing the enrolment flow?</div>
+              <div class="text-zinc-400">1. Click "STUDENT DEMO" above → 2. Go to Courses → 3. Click Enrol → Form auto-fills with Thabo's details</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <div class="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-6 backdrop-blur">
+          <h3 class="font-semibold mb-4">Or login with email</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="text-xs text-zinc-500 mb-1 block">Email</label>
+              <input type="email" placeholder="you@example.com" class="w-full px-3 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none text-sm">
+            </div>
+            <div>
+              <label class="text-xs text-zinc-500 mb-1 block">Password</label>
+              <input type="password" placeholder="••••••••" class="w-full px-3 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none text-sm">
+            </div>
+            <button onclick="demoLogin('student')" class="w-full py-2.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 font-medium text-sm transition">Login</button>
+            <p class="text-xs text-center text-zinc-500">Demo: any password works, or use the red demo cards</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="page-admin" class="page">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl font-bold">Admin Dashboard</h2>
+        <p class="text-zinc-500 text-sm">Welcome back, MJSCYBER Administrator</p>
+      </div>
+      <div class="px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-xs text-red-400 font-medium">DEMO MODE</div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div class="text-xs text-zinc-500 mb-1">Total Students</div>
+        <div class="text-2xl font-bold">1,247</div>
+        <div class="text-xs text-green-400 mt-1">+12% this month</div>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div class="text-xs text-zinc-500 mb-1">Active Enrolments</div>
+        <div class="text-2xl font-bold">384</div>
+        <div class="text-xs text-green-400 mt-1">+8% this month</div>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div class="text-xs text-zinc-500 mb-1">Revenue (MTD)</div>
+        <div class="text-2xl font-bold">R482k</div>
+        <div class="text-xs text-green-400 mt-1">+23% vs last</div>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div class="text-xs text-zinc-500 mb-1">Completion Rate</div>
+        <div class="text-2xl font-bold">94%</div>
+        <div class="text-xs text-zinc-500 mt-1">Industry leading</div>
+      </div>
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
+        <h3 class="font-semibold">Recent Enrolments</h3>
+        <button class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700">Export CSV</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-zinc-950/50 text-zinc-500 text-xs uppercase">
+            <tr>
+              <th class="text-left px-5 py-3 font-medium">Student</th>
+              <th class="text-left px-5 py-3 font-medium">Course</th>
+              <th class="text-left px-5 py-3 font-medium">Date</th>
+              <th class="text-left px-5 py-3 font-medium">Status</th>
+              <th class="text-left px-5 py-3 font-medium">Amount</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800">
+            <tr class="hover:bg-zinc-800/50">
+              <td class="px-5 py-3"><div class="font-medium">Thabo Mokoena</div><div class="text-xs text-zinc-500">thabo@student.co.za</div></td>
+              <td class="px-5 py-3">Cyber Security Fundamentals</td>
+              <td class="px-5 py-3 text-zinc-400">Today</td>
+              <td class="px-5 py-3"><span class="px-2 py-1 rounded text-xs bg-green-500/10 text-green-400 border border-green-500/20">Paid</span></td>
+              <td class="px-5 py-3 font-medium">R4,999</td>
+            </tr>
+            <tr class="hover:bg-zinc-800/50">
+              <td class="px-5 py-3"><div class="font-medium">Nomsa Dlamini</div><div class="text-xs text-zinc-500">nomsa@email.com</div></td>
+              <td class="px-5 py-3">Ethical Hacking</td>
+              <td class="px-5 py-3 text-zinc-400">Yesterday</td>
+              <td class="px-5 py-3"><span class="px-2 py-1 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span></td>
+              <td class="px-5 py-3 font-medium">R8,999</td>
+            </tr>
+            <tr class="hover:bg-zinc-800/50">
+              <td class="px-5 py-3"><div class="font-medium">Sipho Nkosi</div><div class="text-xs text-zinc-500">sipho@email.com</div></td>
+              <td class="px-5 py-3">SOC Analyst</td>
+              <td class="px-5 py-3 text-zinc-400">2 days ago</td>
+              <td class="px-5 py-3"><span class="px-2 py-1 rounded text-xs bg-green-500/10 text-green-400 border border-green-500/20">Paid</span></td>
+              <td class="px-5 py-3 font-medium">R14,999</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STUDENT DASHBOARD -->
+<section id="page-student" class="page">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-xl font-bold">TM</div>
+      <div>
+        <h2 class="text-2xl font-bold">Welcome, Thabo Mokoena</h2>
+        <p class="text-zinc-500 text-sm">Student ID: MJS-2024-1847 • Bochum, Limpopo</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <h3 class="font-semibold mb-4 flex items-center gap-2">📚 My Enrolments</h3>
+          <div id="student-enrolments" class="space-y-3">
+            <div class="p-4 rounded-xl bg-black/50 border border-zinc-800">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="font-medium">Cyber Security Fundamentals</div>
+                  <div class="text-xs text-zinc-500 mt-1">Enrolled: 15 Jan 2024 • Progress: 68%</div>
+                  <div class="mt-2 w-48 h-1.5 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full w-[68%] bg-red-500 rounded-full"></div></div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs bg-green-500/10 text-green-400 border border-green-500/20">Active</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="showPage('courses')" class="mt-4 w-full py-2.5 rounded-xl border border-dashed border-zinc-700 hover:border-zinc-600 text-sm text-zinc-400 hover:text-zinc-300 transition">+ Enrol in another course</button>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <h3 class="font-semibold mb-4">🎓 Certificates</h3>
+          <div class="p-4 rounded-xl bg-gradient-to-r from-amber-950/30 to-orange-950/30 border border-amber-900/30">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-medium text-amber-200">CompTIA Security+ Ready</div>
+                <div class="text-xs text-amber-300/70 mt-1">Complete Fundamentals to unlock</div>
+              </div>
+              <div class="text-2xl">🏆</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+          <h3 class="font-semibold mb-3">Profile</h3>
+          <div class="space-y-2.5 text-sm">
+            <div class="flex justify-between"><span class="text-zinc-500">Email</span><span>thabo@student.co.za</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">Phone</span><span>082 555 0123</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">ID Number</span><span class="mono text-xs">9001015001087</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">Address</span><span class="text-right">123 Main St, Bochum</span></div>
+          </div>
+        </div>
+
+        <div class="bg-red-950/20 border border-red-900/40 rounded-2xl p-5">
+          <div class="text-sm font-semibold text-red-300 mb-2">Need Help?</div>
+          <p class="text-xs text-zinc-400 mb-3">Your success coach is available Mon-Fri 8am-5pm</p>
+          <button class="w-full py-2 rounded-lg bg-red-600 hover:bg-red-500 text-sm font-medium">Contact Support</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLMENT -->
+<section id="page-enrol" class="page">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <button onclick="showPage('courses')" class="text-sm text-zinc-500 hover:text-zinc-300 mb-6 flex items-center gap-1">← Back to courses</button>
+    
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-2">Complete Your Enrolment</h2>
+      <div class="flex items-center gap-3">
+        <div id="enrol-course-name" class="text-zinc-400"></div>
+        <span class="text-zinc-700">•</span>
+        <div id="enrol-course-price" class="font-semibold text-red-400"></div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="flex items-center gap-2 mb-8">
+      <div class="flex items-center gap-2"><div id="step-1-dot" class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold">1</div><span class="text-sm hidden sm:inline">Course</span></div>
+      <div class="flex-1 h-px bg-zinc-800"></div>
+      <div class="flex items-center gap-2"><div id="step-2-dot" class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold">2</div><span class="text-sm hidden sm:inline">Details</span></div>
+      <div class="flex-1 h-px bg-zinc-800"></div>
+      <div class="flex items-center gap-2"><div id="step-3-dot" class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold">3</div><span class="text-sm hidden sm:inline">Payment</span></div>
+      <div class="flex-1 h-px bg-zinc-800"></div>
+      <div class="flex items-center gap-2"><div id="step-4-dot" class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold">4</div><span class="text-sm hidden sm:inline">Confirm</span></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div id="enrol-step-1" class="enrol-step">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8">
+        <h3 class="text-lg font-semibold mb-4">Confirm Course Selection</h3>
+        <div class="p-5 rounded-xl bg-black/50 border border-zinc-800 mb-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-red-600/20 border border-red-900/50 flex items-center justify-center text-xl">🛡️</div>
+            <div class="flex-1">
+              <div id="confirm-course" class="font-semibold text-lg"></div>
+              <div class="text-sm text-zinc-500 mt-1">8 weeks • Online with live labs • MICT SETA accredited</div>
+              <ul class="mt-3 space-y-1 text-sm text-zinc-400">
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 24/7 lab access</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Industry mentor support</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Certificate on completion</li>
+              </ul>
+            </div>
+            <div class="text-right">
+              <div id="confirm-price" class="text-2xl font-bold"></div>
+              <div class="text-xs text-zinc-500">once-off</div>
+            </div>
+          </div>
+        <div class="flex justify-end">
+          <button onclick="goToStep(2)" class="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-semibold">Continue to Details →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div id="enrol-step-2" class="enrol-step hidden">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-semibold">Your Details</h3>
+          <div class="text-xs px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">Auto-filled from demo</div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs text-zinc-500 mb-1 block">Full Name *</label>
+            <input id="enrol-name" class="w-full px-3.5 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-500 mb-1 block">Email *</label>
+            <input id="enrol-email" type="email" class="w-full px-3.5 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-500 mb-1 block">Phone *</label>
+            <input id="enrol-phone" class="w-full px-3.5 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-500 mb-1 block">ID Number *</label>
+            <input id="enrol-id" class="w-full px-3.5 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none mono">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="text-xs text-zinc-500 mb-1 block">Address</label>
+            <input id="enrol-address" class="w-full px-3.5 py-2.5 rounded-lg bg-black border border-zinc-800 focus:border-red-500 outline-none">
+          </div>
+        </div>
+        <div class="flex justify-between mt-8">
+          <button onclick="goToStep(1)" class="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700">← Back</button>
+          <button onclick="goToStep(3)" class="px-6 py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-semibold">Continue to Payment →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div id="enrol-step-3" class="enrol-step hidden">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8">
+        <h3 class="text-lg font-semibold mb-6">Payment (Demo)</h3>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div class="p-4 rounded-xl border-2 border-red-600 bg-red-950/20 cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-full border-2 border-red-500 flex items-center justify-center"><div class="w-2.5 h-2.5 rounded-full bg-red-500"></div></div>
+                <div>
+                  <div class="font-medium text-sm">Instant EFT / Card</div>
+                  <div class="text-xs text-zinc-500">Demo - no real payment</div>
+                </div>
+              </div>
+            <div class="p-4 rounded-xl border border-zinc-800 opacity-60">
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-full border-2 border-zinc-700"></div>
+                <div>
+                  <div class="font-medium text-sm">NSFAS / Bursary</div>
+                  <div class="text-xs text-zinc-500">Upload proof later</div>
+                </div>
+              </div>
+            </div>
+          <div class="p-5 rounded-xl bg-black/50 border border-zinc-800">
+            <div class="text-sm font-medium mb-3">Order Summary</div>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-zinc-500">Course</span><span id="summary-course"></span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Tuition</span><span id="summary-price"></span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Registration</span><span>R0</span></div>
+              <div class="border-t border-zinc-800 my-2 pt-2 flex justify-between font-semibold"><span>Total</span><span id="summary-total" class="text-red-400"></span></div>
+            </div>
+          </div>
+        <div class="flex justify-between mt-8">
+          <button onclick="goToStep(2)" class="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700">← Back</button>
+          <button onclick="completeEnrolment()" class="px-6 py-2.5 bg-red-600 hover:bg-red-500 rounded-xl font-semibold">Complete Enrolment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div id="enrol-step-4" class="enrol-step hidden">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 sm:p-12 text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center text-3xl mb-4">✓</div>
+        <h3 class="text-2xl font-bold mb-2">Enrolment Successful!</h3>
+        <p class="text-zinc-400 mb-6">Welcome to MJSCYBER, <span id="success-name" class="text-white font-medium"></span></p>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-950 border border-zinc-800 text-sm mb-8">
+          <span class="text-zinc-500">Reference:</span>
+          <span class="mono font-medium" id="ref-number">MJS-2024-8847</span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-3">
+          <button onclick="showPage('student')" class="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-xl font-semibold">Go to Dashboard</button>
+          <button onclick="showPage('courses')" class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-xl font-medium">Browse More Courses</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-zinc-900 mt-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-sm text-zinc-600 flex flex-col sm:flex-row justify-between gap-4">
+    <div>© 2024 MJSCYBER (Pty) Ltd • MICT SETA Accredited</div>
+    <div class="flex gap-4">
+      <span>Demo Portal v4.2</span>
+      <span>•</span>
+      <button onclick="demoLogin('admin')" class="hover:text-zinc-400">Admin Demo</button>
+      <span>•</span>
+      <button onclick="demoLogin('student')" class="hover:text-zinc-400">Student Demo</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+let currentUser = null;
+let currentUserEmail = null;
+let currentUserName = null;
+let pendingEnrolCourse = null;
+let currentEnrol = { name: '', price: '' };
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateNavigation() {
+  const loggedIn = !!currentUser;
+  document.getElementById('btn-login').classList.toggle('hidden', loggedIn);
+  document.getElementById('header-demo').classList.toggle('hidden', loggedIn);
+  document.getElementById('user-menu').classList.toggle('hidden', !loggedIn);
+  document.getElementById('user-menu').classList.toggle('flex', loggedIn);
+  if (loggedIn) {
+    document.getElementById('user-name').textContent = currentUserName;
+    document.getElementById('user-email').textContent = currentUserEmail;
+  }
+}
+
+function demoLogin(type) {
+  currentUser = type;
+  currentUserEmail = type === 'admin' ? 'admin@mjsyber.co.za' : 'thabo@student.co.za';
+  currentUserName = type === 'admin' ? 'MJSCYBER Administrator' : 'Thabo Mokoena';
+  
+  // Show success message
+  alert('✓ Logged in as ' + currentUserName);
+  
+  updateNavigation();
+  
+  // Continue pending enrolment if exists
+  if (pendingEnrolCourse) {
+    const course = pendingEnrolCourse;
+    pendingEnrolCourse = null;
+    startEnrolmentFlow(course.name, course.price);
+    return;
+  }
+  
+  // Navigate to appropriate dashboard
+  if(type === 'admin') {
+    showPage('admin');
+  } else {
+    showPage('student');
+  }
+}
+
+function logout() {
+  currentUser = null;
+  currentUserEmail = null;
+  currentUserName = null;
+  pendingEnrolCourse = null;
+  updateNavigation();
+  showPage('home');
+}
+
+function enrollClick(name, price) {
+  if (!currentUser) {
+    pendingEnrolCourse = { name, price };
+    showPage('login');
+    alert('Please login first - Use demo accounts for quick access');
+    const demoBox = document.getElementById('demo-highlight');
+    if (demoBox) {
+      demoBox.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.4)';
+      setTimeout(() => demoBox.style.boxShadow = '', 2500);
+    }
+    return;
+  }
+  startEnrolmentFlow(name, price);
+}
+
+function startEnrolmentFlow(name, price) {
+  currentEnrol = { name, price };
+  showPage('enrol');
+  document.getElementById('enrol-course-name').textContent = name;
+  document.getElementById('enrol-course-price').textContent = price;
+  document.getElementById('confirm-course').textContent = name;
+  document.getElementById('confirm-price').textContent = price;
+  document.getElementById('summary-course').textContent = name;
+  document.getElementById('summary-price').textContent = price;
+  document.getElementById('summary-total').textContent = price;
+  goToStep(1);
+}
+
+function goToStep(step) {
+  document.querySelectorAll('.enrol-step').forEach(s => s.classList.add('hidden'));
+  document.getElementById('enrol-step-' + step).classList.remove('hidden');
+  
+  // Update progress dots
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('step-' + i + '-dot');
+    if (i < step) {
+      dot.className = 'w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-xs font-bold';
+      dot.innerHTML = '✓';
+    } else if (i === step) {
+      dot.className = 'w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold';
+      dot.innerHTML = i;
+    } else {
+      dot.className = 'w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold';
+      dot.innerHTML = i;
+    }
+  }
+  
+  // Pre-fill Step 2 when shown
+  if (step === 2) {
+    populateEnrolForm();
+  }
+}
+
+function populateEnrolForm() {
+  if(currentUser === 'student') {
+    document.getElementById('enrol-name').value = 'Thabo Mokoena';
+    document.getElementById('enrol-email').value = 'thabo@student.co.za';
+    document.getElementById('enrol-phone').value = '082 555 0123';
+    document.getElementById('enrol-id').value = '9001015001087';
+    document.getElementById('enrol-address').value = '123 Main St, Bochum';
+  } else if(currentUser === 'admin') {
+    document.getElementById('enrol-name').value = 'MJSCYBER Admin';
+    document.getElementById('enrol-email').value = 'admin@mjsyber.co.za';
+    document.getElementById('enrol-phone').value = '011 555 0000';
+    document.getElementById('enrol-id').value = '8001015001087';
+    document.getElementById('enrol-address').value = 'Johannesburg, Gauteng';
+  }
+}
+
+function completeEnrolment() {
+  const name = document.getElementById('enrol-name').value || currentUserName;
+  document.getElementById('success-name').textContent = name;
+  document.getElementById('ref-number').textContent = 'MJS-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+  
+  // Add to student dashboard
+  const enrolmentsDiv = document.getElementById('student-enrolments');
+  const newEnrol = document.createElement('div');
+  newEnrol.className = 'p-4 rounded-xl bg-black/50 border border-zinc-800';
+  newEnrol.innerHTML = `
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="font-medium">${currentEnrol.name}</div>
+        <div class="text-xs text-zinc-500 mt-1">Enrolled: Today • Progress: 0%</div>
+        <div class="mt-2 w-48 h-1.5 bg-zinc-800 rounded-full overflow-hidden"><div class="h-full w-[2%] bg-red-500 rounded-full"></div></div>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20">New</span>
+    </div>
+  `;
+  enrolmentsDiv.prepend(newEnrol);
+  
+  goToStep(4);
+}
+
+// Initialize
+updateNavigation();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MJSCYBER - WIL 3A Presentation</title>
+<style>
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: #0a0a0b; color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; }
+.deck { position: relative; width: 100vw; height: 100vh; }
+.slide { position: absolute; inset: 0; padding: clamp(1.25rem,4vw,3.5rem) clamp(1.25rem,5vw,4.5rem) 90px; opacity: 0; transform: translateY(24px); transition: opacity .45s ease, transform .45s ease; pointer-events: none; display: flex; }
+.slide.active { opacity: 1; transform: none; pointer-events: auto; }
+.slide-inner { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+.slide.scroll .slide-inner { justify-content: flex-start; overflow-y: auto; padding-right: .5rem; }
+.slide.scroll .slide-inner::-webkit-scrollbar { width: 6px; }
+.slide.scroll .slide-inner::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+
+h1 { font-size: clamp(2.8rem,9vw,6.5rem); font-weight: 900; letter-spacing: -0.03em; line-height: .9; margin: 0; color: #ef4444; }
+h2 { font-size: clamp(1.3rem,3.2vw,2.1rem); font-weight: 600; margin: .75rem 0 0; color: #e4e4e7; }
+.slide-title { font-size: clamp(1.7rem,4vw,2.8rem); font-weight: 800; color: #ef4444; margin: 0 0 1.8rem; letter-spacing: -0.01em; padding-bottom: .7rem; border-bottom: 2px solid #262626; display: flex; align-items: center; gap: .7rem; }
+.slide-title::before { content: ""; width: 4px; height: 1.1em; background: #ef4444; border-radius: 2px; }
+
+.card { background: #1a1a1b; border: 1px solid #262626; border-radius: 16px; padding: 1.25rem 1.5rem; }
+.grid { display: grid; gap: 1rem; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.grid-auto { grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+
+ul.clean { list-style: none; margin: 0; padding: 0; }
+ul.clean li { position: relative; padding: .72rem 0 .72rem 1.7rem; border-bottom: 1px solid rgba(38,38,38,.7); font-size: 1.06rem; line-height: 1.5; }
+ul.clean li:last-child { border-bottom: none; }
+ul.clean li::before { content: "▸"; position: absolute; left: 0; top: .7rem; color: #ef4444; font-weight: 700; }
+ul.tight li { padding: .5rem 0 .5rem 1.5rem; font-size: 1rem; }
+
+.badge { display: inline-block; padding: .35rem .75rem; background: #1a1a1b; border: 1px solid #262626; border-radius: 999px; color: #ef4444; font-weight: 600; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+
+.subhead { color: #ef4444; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 .6rem; }
+
+ol.problems { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .75rem; counter-reset: prob; }
+ol.problems li { counter-increment: prob; background: #1a1a1b; border: 1px solid #262626; padding: .85rem 1rem .85rem 3rem; border-radius: 12px; position: relative; font-size: .98rem; line-height: 1.4; }
+ol.problems li::before { content: counter(prob); position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); width: 1.65rem; height: 1.65rem; background: #ef4444; color: #0a0a0b; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .8rem; }
+
+.kv { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9rem; color: #d4d4d8; line-height: 1.6; }
+.kv strong { color: #fafafa; font-weight: 600; }
+
+.tree { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(.85rem,1.8vw,1.05rem); line-height: 1.75; color: #e4e4e7; margin: 0; white-space: pre; overflow: auto; }
+
+.check li::before { content: "✓"; color: #22c55e; }
+
+.nav { position: fixed; bottom: 0; left: 0; right: 0; height: 72px; background: rgba(10,10,11,.92); backdrop-filter: blur(10px); border-top: 1px solid #262626; display: flex; align-items: center; justify-content: space-between; padding: 0 max(1rem,3vw); gap: 1rem; z-index: 50; }
+.progress { position: absolute; top: 0; left: 0; height: 2px; background: #ef4444; width: 0; transition: width .4s ease; box-shadow: 0 0 10px rgba(239,68,68,.5); }
+.nav-left { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 8px rgba(239,68,68,.6); }
+.brand { font-weight: 700; letter-spacing: .02em; font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand span { color: #71717a; font-weight: 500; margin-left: .4rem; }
+.controls { display: flex; align-items: center; gap: .6rem; }
+.btn { appearance: none; border: 1px solid #2a2a2e; background: #141416; color: #fafafa; padding: .55rem .95rem; border-radius: 10px; font-size: .9rem; font-weight: 500; cursor: pointer; transition: .18s; }
+.btn:hover:not(:disabled) { background: #1f1f22; border-color: #3a3a40; transform: translateY(-1px); }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn-primary { background: #ef4444; border-color: #ef4444; color: #0a0a0b; font-weight: 650; }
+.btn-primary:hover:not(:disabled) { background: #f25a5a; }
+.counter { font-variant-numeric: tabular-nums; color: #a1a1ab; font-size: .85rem; min-width: 3.5rem; text-align: center; }
+
+.stat { text-align: center; padding: 1rem; }
+.stat-big { font-size: 2.3rem; font-weight: 800; color: #ef4444; line-height: 1; }
+.stat-label { color: #a1a1aa; font-size: .85rem; margin-top: .25rem; }
+
+@media (max-width: 900px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  ol.problems { grid-template-columns: 1fr; }
+  .slide { padding-bottom: 100px; }
+  .card { padding: 1rem 1.15rem; }
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- Slide 1 -->
+<section class="slide active" data-title="Title">
+  <div class="slide-inner" style="align-items:center; text-align:center; justify-content:center">
+    <div class="badge" style="margin-bottom:2rem">WIL 3A PRESENTATION</div>
+    <h1>THE PRESENTATION</h1>
+    <h2>MJSCYBER Security School</h2>
+    <p style="color:#a1a1aa; font-size:clamp(1rem,2.2vw,1.2rem); margin-top:1.8rem">WIL 3A – Digital Training Platform | XISD5319</p>
+  </div>
+</section>
+
+<!-- Slide 2 -->
+<section class="slide" data-title="About">
+  <div class="slide-inner">
+    <h3 class="slide-title">ABOUT THE COMPANY</h3>
+    <div class="card">
+      <ul class="clean" style="font-size:1.12rem">
+        <li><strong>MJSCYBER PTY LTD</strong> | Reg 2022/201980/07 | Est. 2022</li>
+        <li>Location: Bochum, Limpopo, SA</li>
+        <li>PSIRA-accredited private security training</li>
+        <li>Services: PSIRA Grades A-E, Armed Response, VIP Protection, Site Security</li>
+        <li>500+ guards trained | 98% pass rate | 5+ years</li>
+        <li>Mission: Digitise security training delivery</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3 -->
+<section class="slide" data-title="Vision">
+  <div class="slide-inner">
+    <h3 class="slide-title">VISION</h3>
+    <div class="card">
+      <ul class="clean" style="font-size:1.15rem">
+        <li>Become SA's leading digitally-enabled security training provider</li>
+        <li>Expand nationally while maintaining quality</li>
+        <li>Set standard for tech-driven security education</li>
+        <li>Empower guards with instant digital certification</li>
+        <li>Create seamless training-to-deployment pipeline</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4 -->
+<section class="slide" data-title="Mission">
+  <div class="slide-inner">
+    <h3 class="slide-title">MISSION</h3>
+    <div class="card">
+      <ul class="clean" style="font-size:1.12rem">
+        <li>Provide PSIRA-aligned training via digital platform</li>
+        <li>Reduce admin burden by 70%</li>
+        <li>Deliver instant, verifiable digital certificates</li>
+        <li>Enable remote learning and assessment</li>
+        <li>Support Bochum community and beyond</li>
+        <li>Maintain PSIRA and POPIA compliance</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 5 -->
+<section class="slide scroll" data-title="Research">
+  <div class="slide-inner">
+    <h3 class="slide-title">RESEARCH</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="subhead">INTERNAL FINDINGS</div>
+        <ul class="clean tight">
+          <li>Manual paper processes, 15+ hrs/week admin</li>
+          <li>Certificate fraud risk, no verification</li>
+          <li>Excel spreadsheets, errors common</li>
+          <li>No central database</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="subhead">EXTERNAL</div>
+        <ul class="clean tight">
+          <li>PSIRA accreditation requirements</li>
+          <li>POPIA data protection laws</li>
+          <li>Market: 500+ students/year Limpopo</li>
+          <li>Trend: digital credentials, QR codes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6 -->
+<section class="slide scroll" data-title="Summary">
+  <div class="slide-inner">
+    <h3 class="slide-title">SUMMARY RESULTS</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="subhead">Problem</div>
+        <p style="margin:.3rem 0 0; font-size:1.05rem">Manual inefficient processes</p>
+      </div>
+      <div class="card">
+        <div class="subhead">Solution</div>
+        <p style="margin:.3rem 0 0; font-size:1.05rem">React + FastAPI + MongoDB platform</p>
+      </div>
+      <div class="card" style="grid-column:1/-1">
+        <div class="subhead">Built</div>
+        <p style="margin:.3rem 0 0; font-size:1.05rem">Full working prototype</p>
+      </div>
+      <div class="card" style="grid-column:1/-1; border-color:#262626">
+        <div class="subhead">Results</div>
+        <div class="grid grid-auto" style="margin-top:.5rem">
+          <div class="stat"><div class="stat-big">70%</div><div class="stat-label">admin time reduction</div></div>
+          <div class="stat"><div class="stat-big">QR</div><div class="stat-label">digital certificates</div></div>
+          <div class="stat"><div class="stat-big">Live</div><div class="stat-label">real-time verification</div></div>
+          <div class="stat"><div class="stat-big">2</div><div class="stat-label">student & admin portals</div></div>
+          <div class="stat"><div class="stat-big">9</div><div class="stat-label">courses digitised</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7 -->
+<section class="slide" data-title="Organogram">
+  <div class="slide-inner">
+    <h3 class="slide-title">ORGANOGRAM</h3>
+    <div class="card" style="overflow:auto">
+<pre class="tree">Director/Owner
+├── Training Manager
+│   ├── Senior Instructors (A-B)
+│   ├── Junior Instructors (C-E)
+│   └── Armed Response Specialist
+├── Admin Manager
+│   ├── Enrolment Officer
+│   └── Certificate Officer
+├── IT Support (NEW)
+└── Operations Manager
+    ├── VIP Team
+    └── Site Coordinators</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8 -->
+<section class="slide scroll" data-title="Problems">
+  <div class="slide-inner">
+    <h3 class="slide-title">PROBLEMS</h3>
+    <ol class="problems">
+      <li>Manual enrolment (3-5 days)</li>
+      <li>Paper certificates (fraud risk)</li>
+      <li>No verification for employers</li>
+      <li>Excel tracking (errors)</li>
+      <li>15+ hrs/week admin</li>
+      <li>Limited scalability</li>
+      <li>No remote learning</li>
+      <li>Document storage issues</li>
+      <li>Communication gaps</li>
+      <li>PSIRA audit difficulties</li>
+    </ol>
+  </div>
+</section>
+
+<!-- Slide 9 -->
+<section class="slide scroll" data-title="Database">
+  <div class="slide-inner">
+    <h3 class="slide-title">DATABASE/ERD</h3>
+    <p style="color:#a1a1aa; margin:-1rem 0 1.2rem">MongoDB Collections:</p>
+    <div class="grid grid-auto">
+      <div class="card"><div class="subhead">users</div><div class="kv">_id, email, password_hash, role, name</div></div>
+      <div class="card"><div class="subhead">students</div><div class="kv">_id, user_id, student_id, id_number, address, psira_no</div></div>
+      <div class="card"><div class="subhead">courses</div><div class="kv">_id, code, title, grade, duration, price</div></div>
+      <div class="card"><div class="subhead">enrolments</div><div class="kv">_id, student_id, course_id, status, marks</div></div>
+      <div class="card"><div class="subhead">certificates</div><div class="kv">_id, serial, student_id, course_id, qr_code</div></div>
+      <div class="card"><div class="subhead">applications</div><div class="kv">_id, applicant_id, course_id, status, documents</div></div>
+      <div class="card"><div class="subhead">vip_requests</div><div class="kv">_id, client, dates, location, status</div></div>
+      <div class="card"><div class="subhead">site_requests</div><div class="kv">_id, client, site, period, guards</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10 -->
+<section class="slide scroll" data-title="Solution">
+  <div class="slide-inner">
+    <h3 class="slide-title">SOLUTION/PROTOTYPE</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="subhead">Stack</div>
+        <p style="margin:.3rem 0 0; font-size:1.05rem; line-height:1.6">React 19 + Tailwind | FastAPI | MongoDB | Vercel/Railway</p>
+      </div>
+      <div class="card">
+        <div class="subhead">Features</div>
+        <ul class="clean tight check" style="margin-top:.3rem">
+          <li>Landing page & course catalogue</li>
+          <li>Student registration/login</li>
+          <li>Admin dashboard (10 modules)</li>
+          <li>Digital certificates with QR</li>
+          <li>Public verification portal</li>
+          <li>Enrolment management</li>
+          <li>Application processing</li>
+          <li>Document repository</li>
+          <li>VIP/Site requests</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 11 -->
+<section class="slide scroll" data-title="Screenshots">
+  <div class="slide-inner">
+    <h3 class="slide-title">SCREENSHOTS</h3>
+    <div class="card">
+      <div class="subhead">Prototype includes:</div>
+      <ul class="clean" style="margin-top:.5rem">
+        <li>Landing: "Train. Protect. Certify."</li>
+        <li>Courses: 9 programmes (R1,200-R6,500)</li>
+        <li>Admin: 11 students, R15,500 revenue</li>
+        <li>Enrolments: Thabo Mokoena 82/82/82</li>
+        <li>Student: Hello Thabo dashboard</li>
+        <li>Verify: MJS-2026-7B87AF</li>
+        <li>Dark theme, modern UI</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 12 -->
+<section class="slide scroll" data-title="Requirements">
+  <div class="slide-inner">
+    <h3 class="slide-title">REQUIREMENTS</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="subhead">FUNCTIONAL</div>
+        <ul class="clean tight">
+          <li>Authentication, Course mgmt, Enrolments</li>
+          <li>Certificate generation, QR verify</li>
+          <li>Applications, Documents, Reporting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="subhead">NON-FUNCTIONAL</div>
+        <ul class="clean tight">
+          <li>PSIRA & POPIA compliant</li>
+          <li>Mobile responsive, &lt;2s load</li>
+          <li>99.9% uptime, HTTPS secure</li>
+          <li>Scalable to 1000+ students</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 13 -->
+<section class="slide scroll" data-title="Risks & Benefits">
+  <div class="slide-inner">
+    <h3 class="slide-title">RISKS AND BENEFITS</h3>
+    <div class="grid grid-2">
+      <div class="card" style="border-color:#3f1f1f">
+        <div class="subhead" style="color:#fca5a5">RISKS</div>
+        <ul class="clean tight">
+          <li>Data breach → encryption, POPIA</li>
+          <li>Downtime → cloud hosting, backups</li>
+          <li>Adoption → training, support</li>
+          <li>Audit failure → compliance features</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:#1f3f2a">
+        <div class="subhead" style="color:#86efac">BENEFITS</div>
+        <ul class="clean tight">
+          <li>70% admin time saved</li>
+          <li>Instant certificates</li>
+          <li>Fraud prevention</li>
+          <li>Better UX</li>
+          <li>Scalable nationally</li>
+          <li>Real-time PSIRA reporting</li>
+          <li>Competitive advantage</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav">
+  <div class="progress" id="progress"></div>
+  <div class="nav-left">
+    <div class="dot"></div>
+    <div class="brand">MJSCYBER <span id="slideTitle">Title</span></div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="prev" aria-label="Previous slide">‹ Prev</button>
+    <div class="counter" id="counter">1 / 13</div>
+    <button class="btn btn-primary" id="next" aria-label="Next slide">Next ›</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const titleEl = document.getElementById('slideTitle');
+
+  function show(i){
+    if(i < 0 || i >= total) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    counter.textContent = (current+1) + ' / ' + total;
+    progress.style.width = ((current+1)/total*100) + '%';
+    prev.disabled = current === 0;
+    next.disabled = current === total-1;
+    titleEl.textContent = slides[current].dataset.title || '';
+    const inner = slides[current].querySelector('.slide-inner');
+    if(inner) inner.scrollTop = 0;
+  }
+  prev.addEventListener('click', ()=>show(current-1));
+  next.addEventListener('click', ()=>show(current+1));
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' '){ e.preventDefault(); show(current+1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); show(current-1); }
+    else if(e.key === 'Home'){ e.preventDefault(); show(0); }
+    else if(e.key === 'End'){ e.preventDefault(); show(total-1); }
+  });
+  let sx = 0;
+  document.addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{ const dx = e.changedTouches[0].clientX - sx; if(Math.abs(dx) > 50){ dx < 0 ? show(current+1) : show(current-1); } }, {passive:true});
+  show(0);
+})();
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>
